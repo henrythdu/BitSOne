@@ -36,6 +36,13 @@ nothing but the substitution sites changed — length cannot drift, a dropped by
 newline conversion fails immediately because `\r` has no pattern. Counts are asserted as a second,
 independent witness: CR equal, LF equal plus the header.
 
+One more rule, learned by a checker passing for the wrong reason: derive the substitution set from
+the artifact or assert it — never restate it from memory. A verification that rebuilds a file with a
+shorter pair list reconstructs something the tool never produced, and its failure looks like a
+defect in the file. The set in `bitsone` terms is the six pairs applied in the longest-prefix-first
+order recorded above; a checker that omits `/home/hdu/sdbuild/strands-decider` will report a
+spurious 18-byte shortfall on every log.
+
 ## 2026-10-19 — receipt format
 
 | path | change | why | checked |
