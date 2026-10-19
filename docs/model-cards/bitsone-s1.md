@@ -36,6 +36,30 @@ appear in it):
 Accuracy is temperature-invariant; the per-kind fit cuts ECE 43% and raises NLL. The `test` and
 `ood` splits were never read, and no benchmark suite has been run against this checkpoint.
 
+### Our own evaluation
+
+Nine evaluation splits, scored through `bitsone.serve` — the same renderer, key-token rule and
+pointer head that serve a request — on the committed checkpoint. These are **our splits**, not the
+`norule` holdout above: the numbers are a different measurement, not a replacement, and they are
+not comparable to `0.60475`. None of the nine is a `test` or `ood` split; those remain unread.
+
+| split | rows | accuracy | NLL | ECE |
+|---|---|---|---|---|
+| `adequacy_gen` | 302 | 0.6424 | 0.5913 | 0.0439 |
+| `adequacy_hs2` | 234 | 0.6068 | 0.6707 | 0.0407 |
+| `catchall_v20` | 800 | 0.6675 | 1.0190 | 0.0580 |
+| `flips_v20` | 120 | 0.5333 | 0.7737 | 0.1405 |
+| `generated_v16` | 350 | 0.6829 | 0.7768 | 0.0519 |
+| `generated_v18` | 247 | 0.6113 | 0.9296 | 0.0677 |
+| `multistep_v14` | 4,084 | 0.7272 | 0.6209 | 0.0599 |
+| `para_pairs_v16` | 678 | 0.6844 | 0.7730 | 0.0363 |
+| `para_pairs_v18` | 484 | 0.6116 | 0.9286 | 0.0732 |
+| **total** | **7,299** | **0.6924** | | 0.0363–0.1405 |
+
+Each split was read once through `bitsone.eval`, which writes a receipt under `runs/eval/`; the card
+quotes the committed reports. An earlier pass measured the bare base — the adapter had not bound —
+and those numbers are void, recorded in `runs/AMENDMENTS.md` with their corrected counterparts.
+
 ## Files
 
 | file | where | what |
