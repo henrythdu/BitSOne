@@ -21,8 +21,20 @@ corpus-attribution line in `README.md`.
 | `runs/run/out/run7-artifacts-*.tar.gz.sha256` | deleted | it named a tarball that is not in the tree and never was | nothing references it |
 | `runs/run/out/calibrated/<previous name>.json` | renamed `bitsone-s1_config.json`; `base_model` changed from a machine-local path to `microsoft/bitnet-b1.58-2B-4T` | the old name was the upstream's; `AGENTS.md` requires a published config to name a usable base rather than a directory that exists on one machine | temperatures unchanged (`temperature` 1.0157, `temperature_by_kind` noul 0.5036 / choice 0.8630 / score 1.1297); every other field identical |
 | `runs/run/calib-work/` | untracked (`git rm --cached`) | nine files duplicating `runs/run/out/`; both copies were on disk | byte-identical: `start.log`, `train.log`, `train_config.json` all compare equal |
-| `runs/run/out/{start,train}.log`, `runs/run/calib-work/{start,train}.log`, `runs/run/smoke/{smoke-on,smoke-off}.log` | upstream path and name replaced by `<corpus-dir>` / `<external>` / `<corpus>`, `/home/hdu` → `<home>`; three-line header added to each | the ruling, on a repository that is now public | line counts unchanged; only the substituted tokens differ — the logs are the run's own output and were not rewritten beyond the substitution |
+| `runs/run/out/{start,train}.log`, `runs/run/calib-work/{start,train}.log`, `runs/run/smoke/{smoke-on,smoke-off}.log` | upstream path and name replaced by `<corpus-dir>` / `<external>` / `<corpus>`, `/home/hdu` → `<home>`; three-line header added to each | the ruling, on a repository that is now public | redacted on BYTES from the `352e7b1` blobs, then verified by a single-pass alignment: every step is either an identical byte or a substitution site, so no other byte moved. CR counts preserved (start.log 71 → 71, smoke logs 26 and 21), LF counts moved by exactly the three header lines (820 → 823, 393 → 396). An earlier attempt read the files in text mode, which normalised the `\r`-separated progress lines to `\n`; that version was never pushed as final and was redone from the blob. Its header line and this entry both claimed the counts were unchanged, which was false of that artifact |
 | `runs/run/CORPUS-MANIFEST.md`, `runs/run/smoke/TEACHER-SMOKE.md` | same substitution | same | row counts and every figure unchanged |
+
+## 2026-10-19 — how the redactions were verified
+
+The rule for touching evidence: write bytes, never text. A text-mode read/write normalises line
+endings, and the run logs carry `\r`-separated progress updates that are not lines at all.
+
+The predicate used, and the one to use again: rebuild the file from its blob at the recorded commit,
+then walk both byte strings in one pass. At every offset either the bytes are equal, or a
+substitution pattern matches and its replacement matches in turn. If the walk ends at both ends,
+nothing but the substitution sites changed — length cannot drift, a dropped byte cannot pass, and a
+newline conversion fails immediately because `\r` has no pattern. Counts are asserted as a second,
+independent witness: CR equal, LF equal plus the header.
 
 ## 2026-10-19 — receipt format
 
