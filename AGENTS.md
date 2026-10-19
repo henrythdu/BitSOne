@@ -49,6 +49,8 @@ frozen at the git tag `research-archive-2026-10-15` and is deliberately absent f
 - `patches/` — `verify.sh`.
 - `experiments/run7.yaml` — the arm.
 - `runs/run/` — run 7's evidence (result, corpus manifest, calibration, history).
+- `runs/AMENDMENTS.md` — the ledger of every deliberate change to that evidence: what changed,
+  why, and the check that shows nothing else moved.
 - `docs/model-cards/` — the model card, also published as the Hub README.
 - Attribution (the corpus, adopted under its own terms and not redistributed) — `README.md`,
   *Attribution*.
@@ -72,6 +74,11 @@ frozen at the git tag `research-archive-2026-10-15` and is deliberately absent f
 - **The corpus is third-party and lives outside the tree.** `checks/corpus_render_check.py` needs it;
   point it with `--corpus-dir` or `BITSONE_CORPUS_DIR`. It is read-only: never write into it.
 - **Never rerun an earlier experiment.** The numbers are the record; the record is frozen at the tag.
+- **The record is immutable, and amendments are ledgered.** Files under `runs/` are evidence: do
+  not edit a number, a log or a receipt in place. When a record genuinely has to change — a
+  naming ruling, a format change, a rename — the change lands in the same commit as an entry in
+  `runs/AMENDMENTS.md` naming the file, the reason, and what was checked to show nothing else
+  moved. A commit that touches `runs/` without an entry is the defect the ledger exists to expose.
 - **The published config must name a usable base.** The checkpoint config carries the calibrated
   temperatures and a `base_model` field; if you regenerate it, point `base_model` at
   `microsoft/bitnet-b1.58-2B-4T` rather than at a machine-local directory. Its filename is due to
