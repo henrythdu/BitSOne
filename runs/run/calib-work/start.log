@@ -1,0 +1,820 @@
+=== run-7 start 2026-10-14T20:37:27Z ===
+host: f226b592c15d  gpu: NVIDIA RTX A6000, 580.159.03, 49140 MiB
+python3: Python 3.10.12
+sshd LISTENING: /usr/sbin/sshd
+
+== STAGE setup ==
+== 1. sync the six prefixes (run5/base is read-only and is NOT re-uploaded) ==
+   run5/base -> /root/run7/base
+2026/10/14 20:37:31 NOTICE: Config file "/root/.config/rclone/rclone.conf" not found - using defaults
+2026/10/14 20:37:31 NOTICE: s3: s3 provider "Cloudflare" not known - please set correctly
+Transferred:   	   22.533 MiB / 1.098 GiB, 2%, 0 B/s, ETA -
+Transferred:            4 / 7, 57%
+Elapsed time:         0.7s
+Transferring:
+ *                             model.safetensors:  2% /1.098Gi, 0/s, -
+ *                                tokenizer.json: transferring
+ *                         tokenizer_config.json: transferringTransferred:   	  210.750 MiB / 1.106 GiB, 19%, 0 B/s, ETA -
+Transferred:            5 / 7, 71%
+Elapsed time:         1.2s
+Transferring:
+ *                             model.safetensors: 18% /1.098Gi, 0/s, -
+ *                                tokenizer.json: 23% /8.665Mi, 0/s, -Transferred:   	  451.316 MiB / 1.106 GiB, 40%, 298.729 MiB/s, ETA 2s
+Transferred:            5 / 7, 71%
+Elapsed time:         1.7s
+Transferring:
+ *                             model.safetensors: 39% /1.098Gi, 294.743Mi/s, 2s
+ *                                tokenizer.json: 69% /8.665Mi, 0/s, -Transferred:   	  626.247 MiB / 1.106 GiB, 55%, 298.729 MiB/s, ETA 1s
+Transferred:            6 / 7, 86%
+Elapsed time:         2.2s
+Transferring:
+ *                             model.safetensors: 54% /1.098Gi, 294.743Mi/s, 1sTransferred:   	  835.278 MiB / 1.106 GiB, 74%, 344.267 MiB/s, ETA 0s
+Transferred:            6 / 7, 86%
+Elapsed time:         2.7s
+Transferring:
+ *                             model.safetensors: 73% /1.098Gi, 339.932Mi/s, 0sTransferred:   	  990.715 MiB / 1.106 GiB, 87%, 344.267 MiB/s, ETA 0s
+Transferred:            6 / 7, 86%
+Elapsed time:         3.2s
+Transferring:
+ *                             model.safetensors: 87% /1.098Gi, 339.932Mi/s, 0sTransferred:   	    1.005 GiB / 1.106 GiB, 91%, 338.448 MiB/s, ETA 0s
+Transferred:            6 / 7, 86%
+Elapsed time:         3.7s
+Transferring:
+ *                             model.safetensors: 90% /1.098Gi, 335.450Mi/s, 0sTransferred:   	    1.032 GiB / 1.106 GiB, 93%, 338.448 MiB/s, ETA 0s
+Transferred:            6 / 7, 86%
+Elapsed time:         4.2s
+Transferring:
+ *                             model.safetensors: 93% /1.098Gi, 335.450Mi/s, 0sTransferred:   	    1.063 GiB / 1.106 GiB, 96%, 267.233 MiB/s, ETA 0s
+Transferred:            6 / 7, 86%
+Elapsed time:         4.7s
+Transferring:
+ *                             model.safetensors: 96% /1.098Gi, 264.972Mi/s, 0sTransferred:   	    1.106 GiB / 1.106 GiB, 100%, 267.233 MiB/s, ETA 0s
+Transferred:            6 / 7, 86%
+Elapsed time:         5.2s
+Transferring:
+ *                             model.safetensors:100% /1.098Gi, 264.972Mi/s, 0sTransferred:   	    1.106 GiB / 1.106 GiB, 100%, 227.070 MiB/s, ETA 0s
+Transferred:            6 / 7, 86%
+Elapsed time:         5.7s
+Transferring:
+ *                             model.safetensors:100% /1.098Gi, 225.258Mi/s, 0sTransferred:   	    1.106 GiB / 1.106 GiB, 100%, 227.070 MiB/s, ETA 0s
+Transferred:            6 / 7, 86%
+Elapsed time:         6.2s
+Transferring:
+ *                             model.safetensors:100% /1.098Gi, 225.258Mi/s, 0sTransferred:   	    1.106 GiB / 1.106 GiB, 100%, 189.225 MiB/s, ETA 0s
+Transferred:            6 / 7, 86%
+Elapsed time:         6.7s
+Transferring:
+ *                             model.safetensors:100% /1.098Gi, 187.715Mi/s, 0sTransferred:   	    1.106 GiB / 1.106 GiB, 100%, 189.225 MiB/s, ETA 0s
+Transferred:            6 / 7, 86%
+Elapsed time:         7.2s
+Transferring:
+ *                             model.safetensors:100% /1.098Gi, 187.715Mi/s, 0sTransferred:   	    1.106 GiB / 1.106 GiB, 100%, 162.193 MiB/s, ETA 0s
+Transferred:            6 / 7, 86%
+Elapsed time:         7.7s
+Transferring:
+ *                             model.safetensors:100% /1.098Gi, 160.898Mi/s, 0sTransferred:   	    1.106 GiB / 1.106 GiB, 100%, 162.193 MiB/s, ETA 0s
+Transferred:            7 / 7, 100%
+Elapsed time:         7.8s
+   run7/corpus -> /root/run7/data
+2026/10/14 20:37:40 NOTICE: Config file "/root/.config/rclone/rclone.conf" not found - using defaults
+2026/10/14 20:37:40 NOTICE: s3: s3 provider "Cloudflare" not known - please set correctly
+Transferred:   	          0 B / 164.967 MiB, 0%, 0 B/s, ETA -
+Transferred:            0 / 6, 0%
+Elapsed time:         0.7s
+Transferring:
+ *                            adequacy_gen.jsonl: transferring
+ *                            adequacy_hs2.jsonl: transferring
+ *                          generated_v16p.jsonl: transferring
+ *                          generated_v18p.jsonl: transferringTransferred:   	   34.174 MiB / 131.036 MiB, 26%, 0 B/s, ETA -
+Transferred:            3 / 6, 50%
+Elapsed time:         1.2s
+Transferring:
+ *                          generated_v16p.jsonl: 35% /17.846Mi, 0/s, -
+ *                           multistep_v14.jsonl:  1% /86.415Mi, 0/s, -
+ *                                train_v5.jsonl: transferringTransferred:   	   48.614 MiB / 209.588 MiB, 23%, 45.599 MiB/s, ETA 3s
+Transferred:            4 / 6, 67%
+Elapsed time:         1.7s
+Transferring:
+ *                           multistep_v14.jsonl:  2% /86.415Mi, 0/s, -
+ *                                train_v5.jsonl:  2% /78.552Mi, 0/s, -Transferred:   	   49.614 MiB / 209.588 MiB, 24%, 45.599 MiB/s, ETA 3s
+Transferred:            4 / 6, 67%
+Elapsed time:         2.2s
+Transferring:
+ *                           multistep_v14.jsonl:  3% /86.415Mi, 2.993Mi/s, 27s
+ *                                train_v5.jsonl:  2% /78.552Mi, 0/s, -Transferred:   	   52.614 MiB / 209.588 MiB, 25%, 25.798 MiB/s, ETA 6s
+Transferred:            4 / 6, 67%
+Elapsed time:         2.7s
+Transferring:
+ *                           multistep_v14.jsonl:  4% /86.415Mi, 2.993Mi/s, 27s
+ *                                train_v5.jsonl:  5% /78.552Mi, 2.994Mi/s, 24sTransferred:   	   55.614 MiB / 209.588 MiB, 27%, 25.798 MiB/s, ETA 5s
+Transferred:            4 / 6, 67%
+Elapsed time:         3.2s
+Transferring:
+ *                           multistep_v14.jsonl:  6% /86.415Mi, 2.497Mi/s, 32s
+ *                                train_v5.jsonl:  6% /78.552Mi, 2.994Mi/s, 24sTransferred:   	   58.614 MiB / 209.588 MiB, 28%, 18.864 MiB/s, ETA 8s
+Transferred:            4 / 6, 67%
+Elapsed time:         3.7s
+Transferring:
+ *                           multistep_v14.jsonl:  8% /86.415Mi, 2.497Mi/s, 31s
+ *                                train_v5.jsonl:  8% /78.552Mi, 2.997Mi/s, 23sTransferred:   	   88.457 MiB / 209.588 MiB, 42%, 18.864 MiB/s, ETA 6s
+Transferred:            4 / 6, 67%
+Elapsed time:         4.2s
+Transferring:
+ *                           multistep_v14.jsonl: 40% /86.415Mi, 8.373Mi/s, 6s
+ *                                train_v5.jsonl: 11% /78.552Mi, 2.997Mi/s, 23sTransferred:   	  184.033 MiB / 209.588 MiB, 88%, 25.995 MiB/s, ETA 0s
+Transferred:            5 / 6, 83%
+Elapsed time:         4.7s
+Transferring:
+ *                                train_v5.jsonl: 67% /78.552Mi, 8.884Mi/s, 2sTransferred:   	  209.588 MiB / 209.588 MiB, 100%, 25.995 MiB/s, ETA 0s
+Transferred:            6 / 6, 100%
+Elapsed time:         5.0s
+   run7/teacher -> /root/run7/teacher
+2026/10/14 20:37:45 NOTICE: Config file "/root/.config/rclone/rclone.conf" not found - using defaults
+2026/10/14 20:37:45 NOTICE: s3: s3 provider "Cloudflare" not known - please set correctly
+Transferred:   	      124 KiB / 4.444 MiB, 3%, 0 B/s, ETA -
+Transferred:            0 / 1, 0%
+Elapsed time:         0.7s
+Transferring:
+ *                             teacher_v20.jsonl:  2% /4.444Mi, 0/s, -Transferred:   	    4.444 MiB / 4.444 MiB, 100%, 0 B/s, ETA -
+Transferred:            1 / 1, 100%
+Elapsed time:         0.9s
+   run7/code -> /root/run7/code
+2026/10/14 20:37:47 NOTICE: Config file "/root/.config/rclone/rclone.conf" not found - using defaults
+2026/10/14 20:37:47 NOTICE: s3: s3 provider "Cloudflare" not known - please set correctly
+Transferred:   	          0 B / 226.485 KiB, 0%, 0 B/s, ETA -
+Transferred:            0 / 16, 0%
+Elapsed time:         0.7s
+Transferring:
+ *                    src/strands_decider/cli.py: transferring
+ *               src/strands_decider/__init__.py: transferring
+ *            src/strands_decider/cpu_kernels.py: transferring
+ *            src/strands_decider/distributed.py: transferringTransferred:   	   36.565 KiB / 350.295 KiB, 10%, 0 B/s, ETA -
+Transferred:            4 / 33, 12%
+Elapsed time:         1.2s
+Transferring:
+ *               src/strands_decider/evaluate.py: transferring
+ *              src/strands_decider/hf_export.py: transferring
+ *                  src/strands_decider/infer.py: transferring
+ *             src/strands_decider/mlx_engine.py: transferringTransferred:   	  168.413 KiB / 423.405 KiB, 40%, 168.387 KiB/s, ETA 1s
+Transferred:            9 / 33, 27%
+Elapsed time:         1.7s
+Transferring:
+ *            src/strands_decider/mps_kernels.py: transferring
+ *              src/strands_decider/prompting.py: transferring
+ *                 src/strands_decider/schema.py: transferring
+ *                 src/strands_decider/server.py: transferringTransferred:   	  263.051 KiB / 429.771 KiB, 61%, 168.387 KiB/s, ETA 0s
+Transferred:           16 / 33, 48%
+Elapsed time:         2.2s
+Transferring:
+ *          src/strands_decider/data/__init__.py: transferring
+ *          src/strands_decider/data/adequacy.py: transferring
+ *          src/strands_decider/data/catchall.py: transferring
+ *           src/strands_decider/data/collate.py: transferringTransferred:   	  286.588 KiB / 412.620 KiB, 69%, 143.277 KiB/s, ETA 0s
+Transferred:           21 / 33, 64%
+Elapsed time:         2.7s
+Transferring:
+ *            src/strands_decider/data/format.py: transferring
+ *         src/strands_decider/data/generated.py: transferring
+ *         src/strands_decider/data/multistep.py: transferring
+ *            src/strands_decider/data/policy.py: transferringTransferred:   	  334.419 KiB / 394.453 KiB, 85%, 143.277 KiB/s, ETA 0s
+Transferred:           26 / 33, 79%
+Elapsed time:         3.2s
+Transferring:
+ *           src/strands_decider/data/recipes.py: transferring
+ *            src/strands_decider/data/replay.py: transferring
+ *          src/strands_decider/data/sampling.py: transferring
+ *            src/strands_decider/data/shards.py: transferringTransferred:   	  450.271 KiB / 450.271 KiB, 100%, 143.277 KiB/s, ETA 0s
+Transferred:           33 / 33, 100%
+Elapsed time:         3.6s
+   run7/config -> /root/run7/config
+2026/10/14 20:37:52 NOTICE: Config file "/root/.config/rclone/rclone.conf" not found - using defaults
+2026/10/14 20:37:52 NOTICE: s3: s3 provider "Cloudflare" not known - please set correctly
+Transferred:   	          0 B / 0 B, -, 0 B/s, ETA -
+Transferred:            0 / 1, 0%
+Elapsed time:         0.7s
+Transferring:
+ *                              config-run7.yaml: transferringTransferred:   	    9.405 KiB / 9.405 KiB, 100%, 0 B/s, ETA -
+Transferred:            1 / 1, 100%
+Elapsed time:         0.8s
+   run7/tools -> /root/run7/runpod
+2026/10/14 20:37:54 NOTICE: Config file "/root/.config/rclone/rclone.conf" not found - using defaults
+2026/10/14 20:37:54 NOTICE: s3: s3 provider "Cloudflare" not known - please set correctly
+Transferred:   	          0 B / 0 B, -, 0 B/s, ETA -
+Checks:                 4 / 4, 100%
+Elapsed time:         1.2s
+
+== 2. the corpus: six files, digest AND row count ==
+   OK  train_v5.jsonl          100449 rows  3d17d1484116d7f1
+   OK  multistep_v14.jsonl      12909 rows  19e769cf7da6ff71
+   OK  generated_v16p.jsonl      2148 rows  4b7f9ac6ad610923
+   OK  generated_v18p.jsonl      1667 rows  c2ac8f7191911940
+   OK  adequacy_hs2.jsonl        4866 rows  2a84d4f555ebd4cb
+   OK  adequacy_gen.jsonl        1300 rows  afbf3dc350456320
+   total 123,339 rows across 6 files
+
+== 3. the teacher -- the only input whose absence is SILENT ==
+   OK  teacher_v20.jsonl        72434 rows  c6048ddc21c4cc34
+
+== 3b. the venv, built BEFORE the YAML parses that need it ==
+Downloading cpython-3.12.15-linux-x86_64-gnu (download) (32.7MiB)
+ Downloaded cpython-3.12.15-linux-x86_64-gnu (download)
+Installed Python 3.12.15 in 1.46s
+ + cpython-3.12.15-linux-x86_64-gnu (python3.12)
+Creating virtual environment at: /root/run7/.venv
+Activate with: source root/run7/.venv/bin/activate
+Using Python 3.12.15 environment at: /root/run7/.venv
+Resolved 57 packages in 572ms
+Downloading nvidia-cublas (403.5MiB)
+Downloading nvidia-cusolver (191.6MiB)
+Downloading nvidia-cufft (204.2MiB)
+Downloading nvidia-cudnn-cu13 (349.1MiB)
+Downloading nvidia-cusparselt-cu13 (162.0MiB)
+Downloading triton (179.5MiB)
+Downloading nvidia-nccl-cu13 (187.4MiB)
+Downloading nvidia-curand (56.8MiB)
+Downloading nvidia-cusparse (139.2MiB)
+Downloading nvidia-nvshmem-cu13 (57.6MiB)
+Downloading nvidia-cuda-nvrtc (86.0MiB)
+Downloading torch (506.1MiB)
+Downloading tokenizers (3.2MiB)
+Downloading cuda-bindings (6.8MiB)
+Downloading nvidia-cuda-cupti (10.2MiB)
+Downloading nvidia-nvjitlink (38.8MiB)
+Downloading numpy (15.9MiB)
+Downloading nvidia-cufile (1.2MiB)
+Downloading pygments (1.2MiB)
+Downloading sympy (6.0MiB)
+Downloading hf-xet (4.0MiB)
+Downloading nvidia-cuda-runtime (2.1MiB)
+Downloading networkx (2.0MiB)
+Downloading setuptools (1.0MiB)
+Downloading transformers (12.0MiB)
+ Downloaded nvidia-cufile
+ Downloaded nvidia-cuda-runtime
+ Downloaded tokenizers
+ Downloaded pygments
+ Downloaded setuptools
+ Downloaded hf-xet
+ Downloaded networkx
+ Downloaded cuda-bindings
+ Downloaded nvidia-cuda-cupti
+ Downloaded numpy
+ Downloaded nvidia-nvjitlink
+ Downloaded nvidia-curand
+ Downloaded sympy
+ Downloaded nvidia-nvshmem-cu13
+ Downloaded nvidia-cuda-nvrtc
+ Downloaded nvidia-cusparse
+ Downloaded nvidia-cusparselt-cu13
+ Downloaded nvidia-nccl-cu13
+ Downloaded nvidia-cusolver
+ Downloaded nvidia-cufft
+ Downloaded triton
+ Downloaded nvidia-cublas
+ Downloaded transformers
+ Downloaded nvidia-cudnn-cu13
+ Downloaded torch
+Prepared 57 packages in 1m 04s
+warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 57 packages in 26.79s
+ + accelerate==1.15.0
+ + annotated-doc==0.0.5
+ + anyio==4.15.1
+ + certifi==2026.7.22
+ + click==8.5.0
+ + cuda-bindings==13.4.4
+ + cuda-pathfinder==1.8.3
+ + cuda-toolkit==13.0.2
+ + filelock==4.1.2
+ + fsspec==2026.9.0
+ + h11==0.16.0
+ + hf-xet==1.7.0
+ + httpcore==1.0.9
+ + httpx==0.28.1
+ + huggingface-hub==1.33.0
+ + idna==3.20
+ + jinja2==3.1.6
+ + markdown-it-py==4.2.0
+ + markupsafe==3.0.4
+ + mdurl==0.1.2
+ + mpmath==1.3.0
+ + networkx==3.7
+ + numpy==2.5.3
+ + nvidia-cublas==13.1.0.3
+ + nvidia-cuda-cupti==13.0.85
+ + nvidia-cuda-nvrtc==13.0.88
+ + nvidia-cuda-runtime==13.0.96
+ + nvidia-cudnn-cu13==9.19.0.56
+ + nvidia-cufft==12.0.0.61
+ + nvidia-cufile==1.15.1.6
+ + nvidia-curand==10.4.0.35
+ + nvidia-cusolver==12.0.4.66
+ + nvidia-cusparse==12.6.3.3
+ + nvidia-cusparselt-cu13==0.8.0
+ + nvidia-nccl-cu13==2.28.9
+ + nvidia-nvjitlink==13.0.88
+ + nvidia-nvshmem-cu13==3.4.5
+ + nvidia-nvtx==13.0.85
+ + onebitllms==0.0.4
+ + packaging==26.3
+ + peft==0.21.2
+ + psutil==7.2.2
+ + pygments==2.21.0
+ + pyyaml==6.0.3
+ + regex==2026.9.29
+ + rich==15.0.0
+ + safetensors==0.8.0
+ + setuptools==81.0.0
+ + shellingham==1.5.4
+ + sympy==1.14.0
+ + tokenizers==0.23.2
+ + torch==2.11.0
+ + tqdm==4.70.1
+ + transformers==5.18.0
+ + triton==3.6.0
+ + typer==0.27.3
+ + typing-extensions==4.16.0
+Using Python 3.12.15 environment at: /root/run7/.venv
+Resolved 13 packages in 341ms
+Downloading pydantic-core (2.1MiB)
+ Downloaded pydantic-core
+Prepared 4 packages in 581ms
+warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 4 packages in 166ms
+ + annotated-types==0.8.0
+ + pydantic==2.14.1
+ + pydantic-core==2.50.1
+ + typing-inspection==0.4.4
+   torch 2.11.0+cu130  cuda True  transformers 5.18.0
+   gpu: NVIDIA RTX A6000, 49140 MiB, 0 MiB
+
+== 4. train_files order: train_v5 MUST be first ==
+   train_files[0] = data/train_v5.jsonl
+   named data/train_v5.jsonl -> present
+   named data/multistep_v14.jsonl -> present
+   named data/generated_v16p.jsonl -> present
+   named data/generated_v18p.jsonl -> present
+   named data/adequacy_hs2.jsonl -> present
+   named data/adequacy_gen.jsonl -> present
+
+== 5. the code: the PATCHED trainer, by digest ==
+   OK  train.py               59bd463ad0cdadf0
+
+== 6. the base: it must be the PACKED ternary torso ==
+   OK  model.safetensors      8143ae115ed6babe
+   base declares offline/autobitlinear (quantization_config keys: ['linear_class', 'quant_method', 'quantization_mode'])
+
+== 7. the venv -- built as 3b, above; nothing to do here ==
+
+== 8. the frozen-KL coverage claim, checked rather than assumed ==
+   kl_frozen_weight=0.0  precompute_frozen_kl=None
+
+SETUP COMPLETE. Every payload byte verified on the pod.
+SETUP EXIT=0
+
+== STAGE train ==
+=== run-7 train  mode=full  2026-10-14T20:39:45Z ===
+  config: mb=8 ga=4 epochs=1 max_steps=None gradient_checkpointing=True max_length=4096
+  teacher_weight=1.0 kl_frozen_weight=0.0 lr_schedule=constant
+   epochs=1 and max_steps unset: the horizon matches the run
+
+== FULL RUN: 3,738 steps ==
+   /root/run7/.venv/bin/python -m strands_decider.cli train --config /root/run7/config/config-run7.yaml --base-model /root/run7/base --output-dir /root/run7/out/checkpoints
+
+[strands-decider] loading base model /root/run7/base
+[transformers] The tokenizer you are loading from '/root/run7/base' with an incorrect regex pattern: https://huggingface.co/mistralai/Mistral-Small-3.1-24B-Instruct-2503/discussions/84#69121093e8b480e709447d5e. This will lead to incorrect tokenization. You should set the `fix_mistral_regex=True` flag when loading this tokenizer to fix this issue.
+[transformers] You have loaded a BitNet model on CPU and have a CUDA device available, make sure to set your model on a GPU device in order to run your model.
+Loading weights:   0%|          | 0/542 [00:00<?, ?it/s]Loading weights:   1%|          | 3/542 [00:17<53:37,  5.97s/it]Loading weights:   1%|          | 6/542 [00:19<24:34,  2.75s/it]Loading weights:   2%|▏         | 10/542 [00:19<11:37,  1.31s/it]Loading weights:   3%|▎         | 16/542 [00:19<05:27,  1.60it/s]Loading weights:   4%|▍         | 21/542 [00:19<03:23,  2.56it/s]Loading weights:   5%|▍         | 26/542 [00:19<02:16,  3.77it/s]Loading weights:   7%|▋         | 39/542 [00:20<01:01,  8.14it/s]Loading weights:   8%|▊         | 44/542 [00:20<00:49, 10.13it/s]Loading weights:  11%|█         | 57/542 [00:20<00:28, 16.82it/s]Loading weights:  12%|█▏        | 63/542 [00:20<00:25, 18.81it/s]Loading weights:  13%|█▎        | 72/542 [00:20<00:18, 25.61it/s]Loading weights:  14%|█▍        | 78/542 [00:20<00:17, 26.68it/s]Loading weights:  16%|█▌        | 86/542 [00:20<00:13, 33.65it/s]Loading weights:  17%|█▋        | 93/542 [00:21<00:11, 39.17it/s]Loading weights:  18%|█▊        | 100/542 [00:21<00:11, 38.08it/s]Loading weights:  20%|█▉        | 108/542 [00:21<00:09, 45.72it/s]Loading weights:  21%|██        | 115/542 [00:21<00:10, 42.31it/s]Loading weights:  23%|██▎       | 122/542 [00:21<00:08, 47.55it/s]Loading weights:  24%|██▍       | 129/542 [00:21<00:07, 51.87it/s]Loading weights:  25%|██▌       | 136/542 [00:22<00:08, 45.78it/s]Loading weights:  27%|██▋       | 144/542 [00:22<00:07, 53.10it/s]Loading weights:  28%|██▊       | 151/542 [00:22<00:06, 56.19it/s]Loading weights:  29%|██▉       | 158/542 [00:22<00:07, 48.55it/s]Loading weights:  30%|███       | 165/542 [00:22<00:07, 52.93it/s]Loading weights:  32%|███▏      | 171/542 [00:22<00:08, 44.50it/s]Loading weights:  34%|███▍      | 183/542 [00:22<00:06, 59.70it/s]Loading weights:  35%|███▌      | 190/542 [00:23<00:06, 50.46it/s]Loading weights:  37%|███▋      | 198/542 [00:23<00:06, 56.72it/s]Loading weights:  38%|███▊      | 205/542 [00:23<00:06, 48.83it/s]Loading weights:  39%|███▉      | 211/542 [00:23<00:06, 50.84it/s]Loading weights:  40%|████      | 219/542 [00:23<00:06, 47.19it/s]Loading weights:  42%|████▏     | 225/542 [00:23<00:07, 41.39it/s]Loading weights:  43%|████▎     | 234/542 [00:23<00:06, 51.12it/s]Loading weights:  44%|████▍     | 240/542 [00:24<00:06, 43.62it/s]Loading weights:  45%|████▌     | 246/542 [00:24<00:06, 46.59it/s]Loading weights:  47%|████▋     | 255/542 [00:24<00:05, 55.59it/s]Loading weights:  48%|████▊     | 262/542 [00:24<00:05, 47.85it/s]Loading weights:  50%|█████     | 273/542 [00:24<00:05, 50.70it/s]Loading weights:  51%|█████▏    | 279/542 [00:24<00:05, 43.92it/s]Loading weights:  53%|█████▎    | 288/542 [00:24<00:04, 52.93it/s]Loading weights:  54%|█████▍    | 295/542 [00:25<00:04, 55.55it/s]Loading weights:  56%|█████▌    | 302/542 [00:25<00:04, 48.48it/s]Loading weights:  57%|█████▋    | 309/542 [00:25<00:04, 52.76it/s]Loading weights:  58%|█████▊    | 315/542 [00:25<00:05, 44.45it/s]Loading weights:  60%|██████    | 327/542 [00:25<00:03, 59.40it/s]Loading weights:  62%|██████▏   | 334/542 [00:25<00:04, 50.46it/s]Loading weights:  64%|██████▎   | 345/542 [00:26<00:03, 52.58it/s]Loading weights:  65%|██████▍   | 351/542 [00:26<00:03, 53.14it/s]Loading weights:  67%|██████▋   | 363/542 [00:26<00:03, 56.19it/s]Loading weights:  68%|██████▊   | 369/542 [00:26<00:03, 47.59it/s]Loading weights:  70%|███████   | 381/542 [00:26<00:02, 61.06it/s]Loading weights:  72%|███████▏  | 388/542 [00:26<00:02, 52.43it/s]Loading weights:  73%|███████▎  | 396/542 [00:27<00:02, 57.95it/s]Loading weights:  74%|███████▍  | 403/542 [00:27<00:02, 59.61it/s]Loading weights:  76%|███████▌  | 410/542 [00:27<00:02, 50.97it/s]Loading weights:  77%|███████▋  | 417/542 [00:27<00:02, 54.98it/s]Loading weights:  78%|███████▊  | 424/542 [00:27<00:02, 57.18it/s]Loading weights:  80%|████████  | 435/542 [00:27<00:01, 57.08it/s]Loading weights:  81%|████████▏ | 441/542 [00:27<00:02, 47.66it/s]Loading weights:  84%|████████▎ | 453/542 [00:28<00:01, 61.50it/s]Loading weights:  85%|████████▍ | 460/542 [00:28<00:01, 51.81it/s]Loading weights:  87%|████████▋ | 471/542 [00:28<00:01, 53.61it/s]Loading weights:  88%|████████▊ | 477/542 [00:28<00:01, 53.81it/s]Loading weights:  90%|█████████ | 489/542 [00:28<00:00, 56.55it/s]Loading weights:  91%|█████████▏| 495/542 [00:28<00:00, 48.03it/s]Loading weights:  94%|█████████▎| 507/542 [00:29<00:00, 52.17it/s]Loading weights:  95%|█████████▍| 513/542 [00:29<00:00, 52.84it/s]Loading weights:  97%|█████████▋| 525/542 [00:29<00:00, 55.74it/s]Loading weights:  98%|█████████▊| 531/542 [00:29<00:00, 55.51it/s]Loading weights: 100%|██████████| 542/542 [00:29<00:00, 18.31it/s]
+[strands-decider] trainable 22,943,232 / 2,435,763,712 (0.94%)
+[strands-decider] teacher distributions on 72,434 of 123,339 rows (weight 1.0)
+[strands-decider] train=119,623 val=3,716
+[strands-decider] length-grouped batching: padding 5.6% of positions grouped vs 74.1% ungrouped (in prompt characters; token padding runs higher)
+[strands-decider] 3738 optimizer steps (warmup 112)
+/root/run7/code/src/strands_decider/train.py:663: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+  running_tkl += float(tkl)
+[strands-decider] epoch 0 step 20/3738 loss 1.9637 lr 1.79e-04 0.16 step/s peak_mem 14.1GiB
+[strands-decider]   teacher kl 0.7467
+[strands-decider] epoch 0 step 40/3738 loss 1.6397 lr 3.57e-04 0.19 step/s peak_mem 14.1GiB
+[strands-decider]   teacher kl 0.5448
+[strands-decider] epoch 0 step 60/3738 loss 1.6761 lr 5.36e-04 0.15 step/s peak_mem 14.4GiB
+[strands-decider]   teacher kl 0.5486
+[strands-decider] epoch 0 step 80/3738 loss 1.5878 lr 7.14e-04 0.16 step/s peak_mem 14.6GiB
+[strands-decider]   teacher kl 0.4974
+[strands-decider] epoch 0 step 100/3738 loss 1.8871 lr 8.93e-04 0.15 step/s peak_mem 14.6GiB
+[strands-decider]   teacher kl 0.6755
+[strands-decider] epoch 0 step 120/3738 loss 2.2191 lr 1.00e-03 0.14 step/s peak_mem 14.6GiB
+[strands-decider]   teacher kl 0.8394
+[strands-decider] epoch 0 step 140/3738 loss 2.2383 lr 1.00e-03 0.14 step/s peak_mem 14.6GiB
+[strands-decider]   teacher kl 0.8304
+[strands-decider] epoch 0 step 160/3738 loss 2.3366 lr 1.00e-03 0.15 step/s peak_mem 14.6GiB
+[strands-decider]   teacher kl 0.8721
+[strands-decider] epoch 0 step 180/3738 loss 3.6103 lr 1.00e-03 0.15 step/s peak_mem 14.6GiB
+[strands-decider]   teacher kl 1.7408
+[strands-decider] epoch 0 step 200/3738 loss 2.6538 lr 1.00e-03 0.15 step/s peak_mem 14.6GiB
+[strands-decider]   teacher kl 1.1109
+[strands-decider] epoch 0 step 220/3738 loss 2.1168 lr 1.00e-03 0.15 step/s peak_mem 14.6GiB
+[strands-decider]   teacher kl 0.7913
+[strands-decider] epoch 0 step 240/3738 loss 2.2246 lr 1.00e-03 0.15 step/s peak_mem 14.6GiB
+[strands-decider]   teacher kl 0.8741
+[strands-decider] epoch 0 step 260/3738 loss 1.9199 lr 1.00e-03 0.15 step/s peak_mem 14.6GiB
+[strands-decider]   teacher kl 0.7020
+[strands-decider] epoch 0 step 280/3738 loss 2.0343 lr 1.00e-03 0.15 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.7988
+[strands-decider] epoch 0 step 300/3738 loss 1.8447 lr 1.00e-03 0.15 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.6162
+[strands-decider] epoch 0 step 320/3738 loss 1.6129 lr 1.00e-03 0.15 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.5780
+[strands-decider] epoch 0 step 340/3738 loss 1.4592 lr 1.00e-03 0.15 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.4420
+[strands-decider] epoch 0 step 360/3738 loss 1.2498 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.3887
+[strands-decider] epoch 0 step 380/3738 loss 1.2280 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.3425
+[strands-decider] epoch 0 step 400/3738 loss 1.1485 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.3321
+[strands-decider] epoch 0 step 420/3738 loss 1.2906 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.4079
+[strands-decider] epoch 0 step 440/3738 loss 1.1168 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.2934
+[strands-decider] epoch 0 step 460/3738 loss 1.1433 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.3669
+[strands-decider] epoch 0 step 480/3738 loss 1.0847 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.2977
+[strands-decider] epoch 0 step 500/3738 loss 1.1488 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.2777
+[strands-decider] eval @ 500: {'val_loss': 0.6936575475335122, 'val_acc': 0.6875}
+[strands-decider] epoch 0 step 520/3738 loss 1.0525 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.2883
+[strands-decider] epoch 0 step 540/3738 loss 0.9614 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.2322
+[strands-decider] epoch 0 step 560/3738 loss 1.1143 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.2959
+[strands-decider] epoch 0 step 580/3738 loss 0.9570 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.2397
+[strands-decider] epoch 0 step 600/3738 loss 1.0167 lr 1.00e-03 0.13 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.2922
+[strands-decider] epoch 0 step 620/3738 loss 0.9037 lr 1.00e-03 0.13 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.2026
+[strands-decider] epoch 0 step 640/3738 loss 0.8811 lr 1.00e-03 0.13 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.2225
+[strands-decider] epoch 0 step 660/3738 loss 0.9793 lr 1.00e-03 0.13 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.2466
+[strands-decider] epoch 0 step 680/3738 loss 0.9011 lr 1.00e-03 0.13 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.2272
+[strands-decider] epoch 0 step 700/3738 loss 0.9532 lr 1.00e-03 0.13 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.2117
+[strands-decider] epoch 0 step 720/3738 loss 0.9508 lr 1.00e-03 0.13 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.2309
+[strands-decider] epoch 0 step 740/3738 loss 0.8729 lr 1.00e-03 0.13 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.2248
+[strands-decider] epoch 0 step 760/3738 loss 0.8888 lr 1.00e-03 0.13 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.2059
+[strands-decider] epoch 0 step 780/3738 loss 0.9073 lr 1.00e-03 0.13 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.2459
+[strands-decider] epoch 0 step 800/3738 loss 0.7685 lr 1.00e-03 0.13 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1865
+[strands-decider] epoch 0 step 820/3738 loss 0.7647 lr 1.00e-03 0.13 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1830
+[strands-decider] epoch 0 step 840/3738 loss 0.8368 lr 1.00e-03 0.13 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1978
+[strands-decider] epoch 0 step 860/3738 loss 0.8379 lr 1.00e-03 0.13 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1974
+[strands-decider] epoch 0 step 880/3738 loss 0.8079 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1882
+[strands-decider] epoch 0 step 900/3738 loss 0.7780 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1568
+[strands-decider] epoch 0 step 920/3738 loss 0.7921 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1994
+[strands-decider] epoch 0 step 940/3738 loss 0.9546 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.2359
+[strands-decider] epoch 0 step 960/3738 loss 0.7934 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1736
+[strands-decider] epoch 0 step 980/3738 loss 0.7551 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1501
+[strands-decider] epoch 0 step 1000/3738 loss 0.8312 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1935
+[strands-decider] eval @ 1000: {'val_loss': 0.5952460241317749, 'val_acc': 0.775}
+[strands-decider] epoch 0 step 1020/3738 loss 0.7978 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1969
+[strands-decider] epoch 0 step 1040/3738 loss 0.7544 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1662
+[strands-decider] epoch 0 step 1060/3738 loss 0.8636 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1922
+[strands-decider] epoch 0 step 1080/3738 loss 0.8679 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.2023
+[strands-decider] epoch 0 step 1100/3738 loss 0.8001 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1751
+[strands-decider] epoch 0 step 1120/3738 loss 0.8035 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1624
+[strands-decider] epoch 0 step 1140/3738 loss 0.7269 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1582
+[strands-decider] epoch 0 step 1160/3738 loss 0.7507 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1632
+[strands-decider] epoch 0 step 1180/3738 loss 0.7433 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1494
+[strands-decider] epoch 0 step 1200/3738 loss 0.8202 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1656
+[strands-decider] epoch 0 step 1220/3738 loss 0.7344 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1574
+[strands-decider] epoch 0 step 1240/3738 loss 0.7950 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1599
+[strands-decider] epoch 0 step 1260/3738 loss 0.7170 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1497
+[strands-decider] epoch 0 step 1280/3738 loss 0.7632 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1759
+[strands-decider] epoch 0 step 1300/3738 loss 0.7359 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1378
+[strands-decider] epoch 0 step 1320/3738 loss 0.7490 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1432
+[strands-decider] epoch 0 step 1340/3738 loss 0.7406 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1815
+[strands-decider] epoch 0 step 1360/3738 loss 0.7218 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1352
+[strands-decider] epoch 0 step 1380/3738 loss 0.7717 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1710
+[strands-decider] epoch 0 step 1400/3738 loss 0.7382 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1536
+[strands-decider] epoch 0 step 1420/3738 loss 0.7120 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1454
+[strands-decider] epoch 0 step 1440/3738 loss 0.7396 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1298
+[strands-decider] epoch 0 step 1460/3738 loss 0.6863 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1446
+[strands-decider] epoch 0 step 1480/3738 loss 0.6031 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1328
+[strands-decider] epoch 0 step 1500/3738 loss 0.7243 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1594
+[strands-decider] eval @ 1500: {'val_loss': 0.5584175933897495, 'val_acc': 0.7525}
+[strands-decider] epoch 0 step 1520/3738 loss 0.6947 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1777
+[strands-decider] epoch 0 step 1540/3738 loss 0.7317 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1588
+[strands-decider] epoch 0 step 1560/3738 loss 0.6600 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1724
+[strands-decider] epoch 0 step 1580/3738 loss 0.7189 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1471
+[strands-decider] epoch 0 step 1600/3738 loss 0.6402 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1312
+[strands-decider] epoch 0 step 1620/3738 loss 0.7919 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1745
+[strands-decider] epoch 0 step 1640/3738 loss 0.6629 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1430
+[strands-decider] epoch 0 step 1660/3738 loss 0.6694 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1501
+[strands-decider] epoch 0 step 1680/3738 loss 0.7327 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1668
+[strands-decider] epoch 0 step 1700/3738 loss 0.7242 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1215
+[strands-decider] epoch 0 step 1720/3738 loss 0.7718 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1613
+[strands-decider] epoch 0 step 1740/3738 loss 0.7504 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1641
+[strands-decider] epoch 0 step 1760/3738 loss 0.7474 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1588
+[strands-decider] epoch 0 step 1780/3738 loss 0.6969 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1439
+[strands-decider] epoch 0 step 1800/3738 loss 0.7047 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1583
+[strands-decider] epoch 0 step 1820/3738 loss 0.7009 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1671
+[strands-decider] epoch 0 step 1840/3738 loss 0.5995 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1105
+[strands-decider] epoch 0 step 1860/3738 loss 0.6793 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1411
+[strands-decider] epoch 0 step 1880/3738 loss 0.7093 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1206
+[strands-decider] epoch 0 step 1900/3738 loss 0.6722 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1167
+[strands-decider] epoch 0 step 1920/3738 loss 0.6764 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1340
+[strands-decider] epoch 0 step 1940/3738 loss 0.6147 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1129
+[strands-decider] epoch 0 step 1960/3738 loss 0.6741 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1287
+[strands-decider] epoch 0 step 1980/3738 loss 0.7208 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1589
+[strands-decider] epoch 0 step 2000/3738 loss 0.6928 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1168
+[strands-decider] eval @ 2000: {'val_loss': 0.550714117884636, 'val_acc': 0.755}
+[strands-decider] epoch 0 step 2020/3738 loss 0.6907 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1297
+[strands-decider] epoch 0 step 2040/3738 loss 0.6189 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1312
+[strands-decider] epoch 0 step 2060/3738 loss 0.5988 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1336
+[strands-decider] epoch 0 step 2080/3738 loss 0.6890 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1361
+[strands-decider] epoch 0 step 2100/3738 loss 0.6370 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1385
+[strands-decider] epoch 0 step 2120/3738 loss 0.6774 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1455
+[strands-decider] epoch 0 step 2140/3738 loss 0.6590 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1199
+[strands-decider] epoch 0 step 2160/3738 loss 0.6599 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1468
+[strands-decider] epoch 0 step 2180/3738 loss 0.6641 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1265
+[strands-decider] epoch 0 step 2200/3738 loss 0.6757 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1163
+[strands-decider] epoch 0 step 2220/3738 loss 0.6366 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1063
+[strands-decider] epoch 0 step 2240/3738 loss 0.6440 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1238
+[strands-decider] epoch 0 step 2260/3738 loss 0.6459 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1115
+[strands-decider] epoch 0 step 2280/3738 loss 0.6241 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1409
+[strands-decider] epoch 0 step 2300/3738 loss 0.6603 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1361
+[strands-decider] epoch 0 step 2320/3738 loss 0.6980 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1423
+[strands-decider] epoch 0 step 2340/3738 loss 0.6071 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1194
+[strands-decider] epoch 0 step 2360/3738 loss 0.7680 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1623
+[strands-decider] epoch 0 step 2380/3738 loss 0.6274 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1040
+[strands-decider] epoch 0 step 2400/3738 loss 0.6320 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1023
+[strands-decider] epoch 0 step 2420/3738 loss 0.6467 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1247
+[strands-decider] epoch 0 step 2440/3738 loss 0.7349 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1398
+[strands-decider] epoch 0 step 2460/3738 loss 0.6054 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1040
+[strands-decider] epoch 0 step 2480/3738 loss 0.6467 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1327
+[strands-decider] epoch 0 step 2500/3738 loss 0.5336 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.0942
+[strands-decider] eval @ 2500: {'val_loss': 0.49318822294473647, 'val_acc': 0.7925}
+[strands-decider] epoch 0 step 2520/3738 loss 0.7257 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1162
+[strands-decider] epoch 0 step 2540/3738 loss 0.7223 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1363
+[strands-decider] epoch 0 step 2560/3738 loss 0.6792 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1337
+[strands-decider] epoch 0 step 2580/3738 loss 0.6493 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1217
+[strands-decider] epoch 0 step 2600/3738 loss 0.6439 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1303
+[strands-decider] epoch 0 step 2620/3738 loss 0.6325 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1205
+[strands-decider] epoch 0 step 2640/3738 loss 0.6410 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1104
+[strands-decider] epoch 0 step 2660/3738 loss 0.6323 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1227
+[strands-decider] epoch 0 step 2680/3738 loss 0.6080 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1175
+[strands-decider] epoch 0 step 2700/3738 loss 0.6432 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1123
+[strands-decider] epoch 0 step 2720/3738 loss 0.6188 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1070
+[strands-decider] epoch 0 step 2740/3738 loss 0.6631 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1157
+[strands-decider] epoch 0 step 2760/3738 loss 0.6528 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1108
+[strands-decider] epoch 0 step 2780/3738 loss 0.6417 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1313
+[strands-decider] epoch 0 step 2800/3738 loss 0.6091 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1116
+[strands-decider] epoch 0 step 2820/3738 loss 0.6470 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1405
+[strands-decider] epoch 0 step 2840/3738 loss 0.5627 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1037
+[strands-decider] epoch 0 step 2860/3738 loss 0.6290 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1143
+[strands-decider] epoch 0 step 2880/3738 loss 0.6702 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1279
+[strands-decider] epoch 0 step 2900/3738 loss 0.6307 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1151
+[strands-decider] epoch 0 step 2920/3738 loss 0.6937 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1351
+[strands-decider] epoch 0 step 2940/3738 loss 0.5485 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.0957
+[strands-decider] epoch 0 step 2960/3738 loss 0.6343 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1085
+[strands-decider] epoch 0 step 2980/3738 loss 0.5737 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1176
+[strands-decider] epoch 0 step 3000/3738 loss 0.5577 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1059
+[strands-decider] eval @ 3000: {'val_loss': 0.5132684717327356, 'val_acc': 0.7925}
+[strands-decider] epoch 0 step 3020/3738 loss 0.6082 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1193
+[strands-decider] epoch 0 step 3040/3738 loss 0.6436 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1031
+[strands-decider] epoch 0 step 3060/3738 loss 0.6266 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1177
+[strands-decider] epoch 0 step 3080/3738 loss 0.5733 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1285
+[strands-decider] epoch 0 step 3100/3738 loss 0.6139 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1061
+[strands-decider] epoch 0 step 3120/3738 loss 0.5995 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.0977
+[strands-decider] epoch 0 step 3140/3738 loss 0.6052 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1075
+[strands-decider] epoch 0 step 3160/3738 loss 0.6276 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1164
+[strands-decider] epoch 0 step 3180/3738 loss 0.6275 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1284
+[strands-decider] epoch 0 step 3200/3738 loss 0.6101 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1256
+[strands-decider] epoch 0 step 3220/3738 loss 0.5841 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1150
+[strands-decider] epoch 0 step 3240/3738 loss 0.5897 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1038
+[strands-decider] epoch 0 step 3260/3738 loss 0.5777 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1080
+[strands-decider] epoch 0 step 3280/3738 loss 0.6381 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1163
+[strands-decider] epoch 0 step 3300/3738 loss 0.6543 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1456
+[strands-decider] epoch 0 step 3320/3738 loss 0.6262 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1286
+[strands-decider] epoch 0 step 3340/3738 loss 0.6178 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1045
+[strands-decider] epoch 0 step 3360/3738 loss 0.6007 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.0913
+[strands-decider] epoch 0 step 3380/3738 loss 0.5643 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1166
+[strands-decider] epoch 0 step 3400/3738 loss 0.6344 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1274
+[strands-decider] epoch 0 step 3420/3738 loss 0.5593 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1024
+[strands-decider] epoch 0 step 3440/3738 loss 0.6157 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.0958
+[strands-decider] epoch 0 step 3460/3738 loss 0.5536 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.0996
+[strands-decider] epoch 0 step 3480/3738 loss 0.6527 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1101
+[strands-decider] epoch 0 step 3500/3738 loss 0.5704 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.0983
+[strands-decider] eval @ 3500: {'val_loss': 0.4756408540904522, 'val_acc': 0.78}
+[strands-decider] epoch 0 step 3520/3738 loss 0.6136 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1419
+[strands-decider] epoch 0 step 3540/3738 loss 0.5582 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1005
+[strands-decider] epoch 0 step 3560/3738 loss 0.5976 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.0962
+[strands-decider] epoch 0 step 3580/3738 loss 0.5412 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1217
+[strands-decider] epoch 0 step 3600/3738 loss 0.5904 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.0999
+[strands-decider] epoch 0 step 3620/3738 loss 0.5554 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.0827
+[strands-decider] epoch 0 step 3640/3738 loss 0.5294 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.0779
+[strands-decider] epoch 0 step 3660/3738 loss 0.6199 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1279
+[strands-decider] epoch 0 step 3680/3738 loss 0.5984 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1182
+[strands-decider] epoch 0 step 3700/3738 loss 0.5775 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1246
+[strands-decider] epoch 0 step 3720/3738 loss 0.6186 lr 1.00e-03 0.14 step/s peak_mem 15.1GiB
+[strands-decider]   teacher kl 0.1047
+[strands-decider] final eval: {'val_loss': 0.466754442974925, 'val_acc': 0.82}
+[strands-decider] saved to /root/run7/out/checkpoints
+
+TRAIN EXIT=0
+
+== the three launch assertions, read out of the run's OWN stdout ==
+   OK   'trainable 22,943,232 / 2,435,763,712 (0.94%)'
+        -> the seven LoRA targets resolved
+   OK   '[strands-decider] train=119,623 val=3,716'
+        -> the split is the full six-file pool
+   OK   'teacher distributions on 72,434 of 123,339 rows (weight 1.0)'
+        -> the teacher attached to every row it covers, at weight 1.0
+   all three present
+ASSERT EXIT=0
+
+== retrieve: mirroring run-7 artifacts to R2 ==
+   up  train.log
+ *                lora/adapter_model.safetensors:100% /82.551Mi, 13.753Mi/s, 0sTransferred:   	  104.015 MiB / 104.015 MiB, 100%, 13.000 MiB/s, ETA 0s
+Transferred:           10 / 10, 100%
+Elapsed time:         8.9s
+   on R2: checkpoints/
+   on R2: hb.json
+   on R2: start.log
+   on R2: train.log
+
+DONE (full).
+
+TRAP: exiting -- retrieving
+
+== retrieve: mirroring run-7 artifacts to R2 ==
+   up  train.log
+ *                lora/adapter_model.safetensors: checkingTransferred:   	          0 B / 0 B, -, 0 B/s, ETA -
+Checks:                10 / 10, 100%
+Elapsed time:         0.7s
+   on R2: checkpoints/
+   on R2: hb.json
+   on R2: start.log
+   on R2: train.log
+TRAIN EXIT=0
+
+== chain finished; mirroring the log and holding so the container never ==
+== exits. RunPod restarts an exited start command, which would train again. ==

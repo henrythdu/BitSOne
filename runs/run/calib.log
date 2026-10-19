@@ -1,0 +1,31 @@
+[transformers] You have loaded a BitNet model on CPU and have a CUDA device available, make sure to set your model on a GPU device in order to run your model.
+Loading weights:   0%|          | 0/542 [00:00<?, ?it/s]Loading weights:   1%|          | 3/542 [00:12<37:19,  4.15s/it]Loading weights:   1%|          | 6/542 [00:15<19:50,  2.22s/it]Loading weights:   6%|▌         | 32/542 [00:15<02:18,  3.68it/s]Loading weights:  11%|█         | 57/542 [00:15<01:00,  7.97it/s]Loading weights:  14%|█▍        | 78/542 [00:15<00:36, 12.87it/s]Loading weights:  18%|█▊        | 97/542 [00:15<00:23, 18.80it/s]Loading weights:  21%|██▏       | 116/542 [00:15<00:16, 26.48it/s]Loading weights:  25%|██▍       | 135/542 [00:15<00:11, 35.84it/s]Loading weights:  28%|██▊       | 153/542 [00:15<00:08, 45.98it/s]Loading weights:  31%|███       | 169/542 [00:15<00:06, 57.07it/s]Loading weights:  34%|███▍      | 186/542 [00:16<00:05, 70.52it/s]Loading weights:  38%|███▊      | 204/542 [00:16<00:03, 84.81it/s]Loading weights:  41%|████      | 222/542 [00:16<00:03, 99.19it/s]Loading weights:  44%|████▍     | 240/542 [00:16<00:02, 112.18it/s]Loading weights:  47%|████▋     | 256/542 [00:16<00:02, 117.43it/s]Loading weights:  50%|█████     | 273/542 [00:16<00:02, 122.70it/s]Loading weights:  54%|█████▎    | 291/542 [00:16<00:01, 133.86it/s]Loading weights:  57%|█████▋    | 309/542 [00:16<00:01, 143.99it/s]Loading weights:  60%|██████    | 327/542 [00:16<00:01, 147.75it/s]Loading weights:  64%|██████▎   | 345/542 [00:17<00:01, 149.78it/s]Loading weights:  67%|██████▋   | 363/542 [00:17<00:01, 155.93it/s]Loading weights:  70%|███████   | 381/542 [00:17<00:01, 158.59it/s]Loading weights:  74%|███████▎  | 399/542 [00:17<00:00, 153.21it/s]Loading weights:  77%|███████▋  | 417/542 [00:17<00:00, 158.87it/s]Loading weights:  80%|████████  | 435/542 [00:17<00:00, 163.22it/s]Loading weights:  84%|████████▎ | 453/542 [00:17<00:00, 164.53it/s]Loading weights:  87%|████████▋ | 471/542 [00:17<00:00, 158.92it/s]Loading weights:  90%|█████████ | 488/542 [00:17<00:00, 157.68it/s]Loading weights:  93%|█████████▎| 504/542 [00:18<00:00, 141.30it/s]Loading weights:  96%|█████████▌| 519/542 [00:18<00:00, 139.52it/s]Loading weights:  99%|█████████▊| 534/542 [00:18<00:00, 135.14it/s]Loading weights: 100%|██████████| 542/542 [00:18<00:00, 29.45it/s] 
+global temperature = 1.0157
+per-primitive choice=0.8630, noul=0.5036, score=1.1297  (written to checkpoint)
+before:      
+{
+    'n': 4000,
+    'accuracy': 0.60475,
+    'ece': 0.07693445760663974,
+    'nll': 0.9224174273682376,
+    'mean_confidence': 0.5278155423933603,
+    'score_mae': 0.7985011685879347
+}
+after global:
+{
+    'n': 4000,
+    'accuracy': 0.60475,
+    'ece': 0.08092329899738833,
+    'nll': 0.9223586791646411,
+    'mean_confidence': 0.5238267010026116,
+    'score_mae': 0.800706531475769
+}
+after:       
+{
+    'n': 4000,
+    'accuracy': 0.60475,
+    'ece': 0.043936183964703064,
+    'nll': 0.9514904524288937,
+    'mean_confidence': 0.5824696598233541,
+    'score_mae': 0.8164350899931451
+}

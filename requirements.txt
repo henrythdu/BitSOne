@@ -1,0 +1,15 @@
+# What this repository's code actually imports: torch (trainers, head, serving), transformers (base
+# load, tokenizer) and peft (LoRA). The base's BitNet layers are built by transformers' own
+# `integrations/bitnet.py`; loading it with `onebitllms` made unimportable succeeds, so it is not a
+# dependency. Versions are the certified `.venv-s1` set; torch's certified build is the CUDA 12.8
+# wheel, 2.11.0+cu128.
+torch==2.11.0
+transformers==5.18.0
+peft==0.21.2
+
+# Imported directly by `bitsone.serve.load_adapter_weights`, which places the adapter's tensors by
+# name instead of trusting the loader's warning. Pinned to the certified `.venv-s1` version.
+safetensors==0.8.0
+
+# Not listed because nothing here imports them directly; pip resolves them through the above:
+# huggingface_hub, tokenizers, numpy.

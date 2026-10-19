@@ -1,0 +1,32 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  our-code-integrity:
+    name: our code is its own
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # No weights, no GPU, no torch, nothing fetched. This asserts that every import in the
+      # executable tree is stdlib, declared in requirements.txt, or ours — the whole provenance
+      # claim this repository makes.
+      - name: every import accounted for
+        run: sh patches/verify.sh
+
+      - name: lint
+        run: |
+          python -m pip install --quiet ruff
+          ruff check .
+
+      - name: type check
+        run: |
+          python -m pip install --quiet mypy
+          mypy .

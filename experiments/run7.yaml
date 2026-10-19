@@ -1,0 +1,185 @@
+# run-7 -- RUN-6 PLUS THE TEACHER AND ALL THE DATA. That is the whole arm.
+#
+# THE ARM IS TWO CHANGES AND THE SECOND IS A CONSEQUENCE OF THE FIRST.
+#   teacher_file    None                -> "teacher/teacher_v20.jsonl"  } one
+#   teacher_weight  0.0                 -> 1.0                          }
+# decision:
+#   train_files     [data/train_pinned] -> the six files                 <-
+# REQUIRED
+#
+# This header said "v21b's recipe, unchanged" and "the diff from v21b is exactly
+# five fields." BOTH WERE TRUE OF AN EARLIER DRAFT AND ARE FALSE NOW. The arm
+# was
+# rebuilt from run-6 rather than from v21b, because v21b is the reference's
+# config
+# for THEIR setup and importing it re-imported choices we had already made
+# differently on the record. Anything below that still reads as a v21b
+# comparison
+# is a leftover and should be read as run-6 comparison instead.
+#
+# ATTRIBUTION: the arm is run-6 plus the teacher. The six-file corpus is NOT a
+# second lever -- it is required BY the teacher (see the positional-index
+# section
+# below), so a win IS teacher-attributable and the corpus cannot be separated
+# from
+# it, by construction. An earlier draft of this line said "tests the full v21b
+# recipe (teacher + frozen-KL anchor + seed)"; that named fields the rebuild
+# removed, so it described a config that is not this one.
+#
+# WHY THIS IS NOT A v21b COMPARISON ANY MORE, field by field against run-6:
+#   teacher_file / teacher_weight / train_files   THE ARM            (above)
+#   val_files        dropped; the split comes from the six files at val_fraction
+#                    0.03, which smoke 2 exercised: train=119,623 val=3,716
+#   base_model       repo path -> "base"          pod path only, no behaviour
+#   output_dir       repo path -> pod path        pod path only, no behaviour
+#   max_steps        run-6 wrote 0, this omits it INERT -- 0 is the default
+#   save_every       run-6 wrote 500, this omits it INERT IN EFFECT and named
+#                    deliberately: 500 only rewrites the same output_dir
+#                    (train.py:715) so it produced no curve to keep, and
+#                    omitting it avoids seven wasted writes. Recorded here so it
+#                    is a NAMED difference rather than an unnoticed one.
+#
+#
+# WHY `lora_targets` IS SEVEN AND NOT TWELVE. Measured on the packed base's own
+# safetensors header: 542 tensors, layers 0..29 (n=30), q_proj/k_proj/v_proj/
+# o_proj/gate_proj/up_proj/down_proj at 60 tensors each, and in_proj_qkv/
+# in_proj_z/in_proj_a/in_proj_b/out_proj at ZERO -- absent. Their comment
+# ("without these LoRA would reach only the 6 full-attention layers of 24") is
+# true of Qwen3.5's hybrid attention and false here, where the seven reach all
+# thirty layers and there are no recurrent layers to miss. Adding the five would
+# be a defect, not fidelity: PEFT would either raise on an unmatched target or
+# widen the config silently.
+#
+# WHY `kl_frozen_weight` IS 0.0, NOT 0.3. The field is run-6's value, so run-7
+# differs from run-6 only by the arm. An earlier draft carried v21b's 0.3 and
+# this
+# header argued for it at length; that argument is WITHDRAWN, and the mechanism
+# it
+# described is still true and still measured, which is why it is kept here
+# rather
+# than deleted. `modeling.frozen_slot_log_probs` is SLOT-based by design -- "the
+# table is over option slots, and the collator draws option order and phrasing
+# from its seed alone, before any tokenisation" -- precisely so a student with
+# another vocabulary can carry the term, and its docstring expects a
+# vocabulary-dependent mask to be "excluded and reported", not to fail. Measured
+# on our pool (123,339 rows, max n_options 24, zero rows above 24):
+#     K<=9    101,818   82.6%   <- their bound, kl_slots = 9
+#     K<=24   123,339  100.0%   <- our bound, kl_slots = 24
+# so the term WOULD have covered every row of ours and excluded nothing. Their
+# comment claims 78.6%; 82.6% here is the same order and independently
+# corroborates the size of the mechanism. The 24-vs-9 slot count is a MEASURED
+# PROPERTY of our base. What changed is not the mechanism but the arm: turning
+# the
+# anchor on would make run-7 two variables, and `runs/run5-bitnet/DEVIATIONS.md`
+# records the user keeping it at 0.0 for exactly that reason.
+#
+#
+# WHY THE WHOLE SIX FILES RATHER THAN A SUBSAMPLE. The teacher's `i` is a
+# POSITIONAL index into `load_examples(cfg.train_files)` -- `train.py:474` is
+# `ex = train_examples[d["i"]]`. Run-5/run-6 subsampled these files to 54,210 of
+# 123,339 rows, so the same teacher against that corpus would IndexError on half
+# its rows and silently resolve the other half to the WRONG example, with only
+# the option-width guard at `train.py:477` in between. Restoring the corpus is
+# not a row-count play; it is the only way the teacher becomes usable.
+# v21b:29-31 states the index semantics, and the file ORDER below is what
+# they are relative to.
+#
+# WHY `val_files` IS DELIBERATELY UNSET. `train.py:483-486` is
+# `if cfg.val_files: val_examples = load_examples(...) else: train_examples,
+# val_examples = split_examples(...)`. Setting `val_files` removes NOTHING from
+# `train_examples`, so any val file drawn from these six files would put every
+# validation row into the training set with no error raised. `val_fraction`
+# makes `split_examples` carve the val out of the pool itself, which is how
+# their published numbers were built.
+#
+# THE EVAL CAVEAT, a property of the trainer rather than of this config:
+# `evaluate_loss(..., max_batches: int = 50)` at `train.py:256`, with a val
+# batch of 8, scores 400 rows. Under `val_fraction` those 400 are a seeded
+# shuffle -- `format.py:157-162` shuffles per task and then `rng.shuffle(val)`
+# again -- so they are a fair sample rather than a file-order prefix, which is
+# the run-5-vs-run-6 comparison. They are still only 400 of ~3,600, so
+# `checks/run7_full_val.py` re-scores every val row after the run and the
+# preflight asserts the first-400 task mix against the whole set.
+
+train_files: ["data/train_v5.jsonl", "data/multistep_v14.jsonl",
+              "data/generated_v16p.jsonl", "data/generated_v18p.jsonl",
+              "data/adequacy_hs2.jsonl", "data/adequacy_gen.jsonl"]
+val_fraction: 0.03
+
+base_model: "base"      # THE DIFFERENCE THAT IS THE EXPERIMENT. v21b names the
+                        # dense Qwen3.5-2B-Base; ours is the packed BitNet b1.58
+                        # 2B-4T torso, quantization_mode offline, linear_class
+                        # autobitlinear, trained on the stored alpha.
+num_slots: 24           # must match `data build --max-options`; also KL width
+head_type: "pointer"    # scores each option from its own hidden state
+pointer_dim: 256
+head_init: "random"     # "lm_head" seeding applies to the slot head only
+kl_frozen_weight: 0.0
+# The frozen 4B's distributions on the short-task rows where it agrees with the
+# gold label (indices into train_v5), and v14's own on the multi-step rows
+# (offset past train_v5); everything after them carries no teacher.
+teacher_file: "teacher/teacher_v20.jsonl"
+teacher_weight: 1.0
+head_dropout: 0.05
+max_length: 4096
+
+use_lora: true
+lora_r: 16
+lora_alpha: 32
+# SEVEN. See the header: the five Qwen-only names are absent from our base.
+lora_targets: ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj",
+               "down_proj"]
+freeze_torso: false     # true = head-only training (weaker, but very cheap)
+
+epochs: 1
+micro_batch_size: 8
+grad_accum: 4           # effective batch 32
+lr: 0.0001              # LoRA
+head_lr: 0.001          # randomly-initialised head needs a bigger step
+lr_schedule: "constant"
+weight_decay: 0.01
+warmup_ratio: 0.03
+max_grad_norm: 1.0
+# v21b:15 calls this a "speed only" setting, and runs 5
+gradient_checkpointing: true
+#                               and 6 both ran it true. This is a RECORDED
+# deviation
+#                               rather than an unrecorded one because a pod
+# smoke
+#                               proved run-7 cannot fit without it: at mb=8 with
+# it
+#                               false the run reached 46.15 GiB allocated
+# against
+#                               47.40 GiB capacity and died trying to allocate
+# 510 MiB,
+#                               inside the LoRA forward, before step 1 finished.
+#                               PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+# was
+#                               already set, so that was genuine capacity and
+# not the
+#                               fragmentation that would have been the cheaper
+# and
+#                               wrong diagnosis. Cost of learning it: $0.036,
+# 3m39s.
+#                               runs/run7-full-corpus/POD-SMOKE-RESULT.md has
+# the log.
+
+shuffle_options: true   # the whole point -- do not turn this off
+group_by_length: true   # on: ~2k-token docs among ~250-token rows would
+                        # otherwise pad most batches; changes composition,
+                        # not content
+ordinal_smoothing: 0.1
+reverse_score_prob: 0.5
+
+output_dir: "out/checkpoints/hobson-2b-run7"
+seed: 0
+                        # comparability with their published runs, and that
+                        # comparison is confounded by a dense Qwen torso,
+                        # whereas seed 0 would have kept every other stochastic
+                        # choice identical to run-6, the one run we can compare
+                        # on matched rows. The rule "where the adopted
+                        # conventions have an answer, take theirs" settles it;
+                        # recorded, not re-argued.
+log_every: 20
+eval_every: 500
+# FAST (speed only)

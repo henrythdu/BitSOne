@@ -1,0 +1,15 @@
+# Revisions to skip when blaming, so a formatting sweep does not attribute
+# every line to the sweep instead of to the change that wrote it.
+#
+# Enable locally (once per clone):
+#     git config blame.ignoreRevsFile .git-blame-ignore-revs
+# GitHub honours this file automatically for blame views.
+#
+# Only PURE formatting belongs here. A commit that reformats and also changes
+# behaviour must NOT be listed, because skipping it would hide the behaviour
+# change too.
+
+# ruff format sweep over checks/ and s1/ -- quote style (single -> double) plus
+# the reflow that follows. 37 files, no semantic change. Three file:line
+# citations were remapped in the same commit.
+c2d8e68

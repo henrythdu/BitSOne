@@ -1,0 +1,19 @@
+{
+  "extraPaths": [
+    "."
+  ],
+  "venvPath": ".",
+  "venv": ".venv-s1",
+  "exclude": [
+    "**/__pycache__",
+    "**/.venv*",
+    "**/node_modules",
+    "**/System One Models/**",
+    "**/BitNet Models/**",
+    "System One Models",
+    "BitNet Models",
+    "Training Data",
+    "openwiki"
+  ],
+  "reportMissingImports": "error"
+}

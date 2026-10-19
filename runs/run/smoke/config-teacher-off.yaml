@@ -1,0 +1,60 @@
+# SMOKE, teacher OFF. The mutation for config-teacher-on.yaml.
+#
+# ONE field differs from the other arm: `teacher_weight: 1.0 -> 0.0`.
+# `teacher_file` is deliberately LEFT SET, so train.py:470 still loads it and
+# still attaches the distributions to the same rows. That makes the comparison
+# single-variable: same file read, same rows attached, same seed, same corpus --
+# only the multiplier on the KL term changes:
+#
+#     train.py:662   step_loss = step_loss + cfg.teacher_weight * tkl
+#
+# If the two arms produce IDENTICAL losses, the teacher term is inert and the
+# ON arm's number is decoration. If they differ, the term is live and the
+# difference is its measured size.
+#
+# See config-teacher-on.yaml for the full deviation list from run-7.
+train_files: ["data/train_v5.jsonl", "data/multistep_v14.jsonl",
+              "data/generated_v16p.jsonl", "data/generated_v18p.jsonl",
+              "data/adequacy_hs2.jsonl", "data/adequacy_gen.jsonl"]
+val_fraction: 0.03
+
+base_model: "base"
+num_slots: 24
+head_type: "pointer"
+pointer_dim: 256
+head_init: "random"
+
+kl_frozen_weight: 0.0
+teacher_file: "teacher/teacher_v20.jsonl"   # STILL SET -- the point of this arm
+teacher_weight: 0.0                          # THE ONLY SEMANTIC DIFFERENCE
+head_dropout: 0.05
+max_length: 4096
+
+use_lora: true
+lora_r: 16
+lora_alpha: 32
+lora_targets: ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj",
+               "down_proj"]
+freeze_torso: false
+
+epochs: 1
+micro_batch_size: 1
+grad_accum: 1
+lr: 0.0001
+head_lr: 0.001
+weight_decay: 0.01
+warmup_ratio: 0.03
+max_grad_norm: 1.0
+gradient_checkpointing: true
+
+shuffle_options: true
+group_by_length: true
+ordinal_smoothing: 0.1
+reverse_score_prob: 0.5
+
+output_dir: "out/teacher-off"
+seed: 5
+log_every: 1
+eval_every: 100000
+max_steps: 3
+precompute_frozen_kl: false

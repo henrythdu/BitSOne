@@ -1,0 +1,35 @@
+{
+ "base_model": "microsoft/bitnet-b1.58-2B-4T",
+ "base_revision": null,
+ "num_slots": 24,
+ "head_hidden": 0,
+ "head_dropout": 0.05,
+ "max_length": 4096,
+ "torch_dtype": "bfloat16",
+ "head_init": "random",
+ "kl_frozen_weight": 0.0,
+ "head_type": "pointer",
+ "pointer_dim": 256,
+ "temperature": 1.0156505703923981,
+ "temperature_by_kind": {
+  "noul": 0.5035636236428354,
+  "choice": 0.8629556148274228,
+  "score": 1.1296801903935303
+ },
+ "ordinal_smoothing": 0.1,
+ "use_lora": true,
+ "lora_r": 16,
+ "lora_alpha": 32,
+ "lora_dropout": 0.05,
+ "lora_targets": [
+  "q_proj",
+  "k_proj",
+  "v_proj",
+  "o_proj",
+  "gate_proj",
+  "up_proj",
+  "down_proj"
+ ],
+ "force_bos": false,
+ "host_embeddings": false
+}

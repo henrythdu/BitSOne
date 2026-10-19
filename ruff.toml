@@ -1,0 +1,19 @@
+# The repo root had no ruff config, so ruff ran its DEFAULT rule set — which excludes `I` (isort).
+# "All checks passed!" therefore never meant "imports are sorted", and CI inherited the same blind spot.
+# P4.5 declares the rule set explicitly so the CI lane, the editor lens and a hand-run agree on one answer.
+#
+# target-version is the LOWEST interpreter the repo must support, not the newest one to hand.
+# It was "py314", and ruff's FORMATTER reads it: at py314 ruff applies PEP 758 and rewrites
+# `except (A, B, C):` into the bare `except A, B, C:`. That form parses on 3.14 and is a
+# SyntaxError before it, so it silently made files unreadable by this repo's own toolchain --
+# the pod ran python 3.12 (its numpy 2.5.3 pin needs >=3.12) and
+# mypy runs on 3.13. 3.12 is what the floor actually is.
+target-version = "py312"
+line-length = 120
+
+[lint]
+select = ["E", "F", "W", "I"]
+# E501 is a NAMED, declared exemption, not a silent one: this repo has never enforced a line length (the
+# default set excludes E501), the house style is long single-line dicts and test tables, and reflowing 38
+# pre-existing sites inside a move commit would bury the move in noise. Every other E/F/W/I rule is live.
+ignore = ["E501"]

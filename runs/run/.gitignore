@@ -1,0 +1,23 @@
+teacher/
+smoke/data/
+smoke/teacher/
+smoke/out/
+
+# run-7's working copies of ONE checkpoint. Four of them, ~105 MB each, all reconstructible:
+# the TARBALL is the digest-verified artifact (bound by the reorg manifest), calibrate.sh
+# extracts from it into .calib-work, and build_artifact.sh keeps a fetched copy plus a nested one.
+#
+# Ignored as DIRECTORIES, deliberately. The root .gitignore's small-evidence allowlist
+# (!runs/**/*.json, *.md, *.log, *.txt) re-includes the metadata INSIDE a checkpoint directory,
+# so without this the repo would start tracking checkpoints/*/lora/README.md,
+# checkpoints/*.json, checkpoints/history.json and so on. That is exactly
+# the failure the root file's `runs/**/ckpt-*/` rule records -- and that rule misses these,
+# because these directories are named `checkpoints/`, not `ckpt-*/`.
+out/fetched/
+out/checkpoints/
+out/.artifact-check/
+out/.artifact-check.prev.*/
+fetched/
+
+# out/calibrated/ is deliberately NOT ignored: it is the fitted config, 774 bytes, and the
+# result of the run's calibration. run-6 tracks the equivalent file.

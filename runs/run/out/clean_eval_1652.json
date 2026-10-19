@@ -1,0 +1,716 @@
+{
+  "run-5 cosine": {
+    "n": 1652,
+    "acc": 0.7736077481840193,
+    "correct": 1278,
+    "mean_batch_loss": 0.5362442230450323,
+    "per_task": {
+      "adequacy_hs2": {
+        "n": 65,
+        "correct": 36,
+        "acc": 0.5538461538461539
+      },
+      "ag_news": {
+        "n": 80,
+        "correct": 73,
+        "acc": 0.9125
+      },
+      "app_reviews": {
+        "n": 65,
+        "correct": 20,
+        "acc": 0.3076923076923077
+      },
+      "banking77": {
+        "n": 111,
+        "correct": 97,
+        "acc": 0.8738738738738738
+      },
+      "boardgame": {
+        "n": 39,
+        "correct": 24,
+        "acc": 0.6153846153846154
+      },
+      "boolq": {
+        "n": 52,
+        "correct": 43,
+        "acc": 0.8269230769230769
+      },
+      "clinc150": {
+        "n": 84,
+        "correct": 84,
+        "acc": 1.0
+      },
+      "contractnli": {
+        "n": 53,
+        "correct": 42,
+        "acc": 0.7924528301886793
+      },
+      "dbpedia": {
+        "n": 53,
+        "correct": 52,
+        "acc": 0.9811320754716981
+      },
+      "formality": {
+        "n": 52,
+        "correct": 28,
+        "acc": 0.5384615384615384
+      },
+      "gen:adequacy": {
+        "n": 18,
+        "correct": 9,
+        "acc": 0.5
+      },
+      "gen:all_conditions": {
+        "n": 4,
+        "correct": 3,
+        "acc": 0.75
+      },
+      "gen:borderline_rubric": {
+        "n": 2,
+        "correct": 1,
+        "acc": 0.5
+      },
+      "gen:cross_artefact": {
+        "n": 3,
+        "correct": 1,
+        "acc": 0.3333333333333333
+      },
+      "gen:dates": {
+        "n": 4,
+        "correct": 2,
+        "acc": 0.5
+      },
+      "gen:definition_scope": {
+        "n": 1,
+        "correct": 1,
+        "acc": 1.0
+      },
+      "gen:exception": {
+        "n": 5,
+        "correct": 3,
+        "acc": 0.6
+      },
+      "gen:judge_action": {
+        "n": 1,
+        "correct": 1,
+        "acc": 1.0
+      },
+      "gen:lookup_chain": {
+        "n": 4,
+        "correct": 2,
+        "acc": 0.5
+      },
+      "gen:missing_fact": {
+        "n": 2,
+        "correct": 2,
+        "acc": 1.0
+      },
+      "gen:nested_exception": {
+        "n": 1,
+        "correct": 0,
+        "acc": 0.0
+      },
+      "gen:numbers": {
+        "n": 4,
+        "correct": 3,
+        "acc": 0.75
+      },
+      "gen:precedence": {
+        "n": 5,
+        "correct": 3,
+        "acc": 0.6
+      },
+      "gen:rubric": {
+        "n": 4,
+        "correct": 2,
+        "acc": 0.5
+      },
+      "gen:running_total": {
+        "n": 3,
+        "correct": 1,
+        "acc": 0.3333333333333333
+      },
+      "gen:surface_trap": {
+        "n": 4,
+        "correct": 1,
+        "acc": 0.25
+      },
+      "gen:tie_break": {
+        "n": 4,
+        "correct": 1,
+        "acc": 0.25
+      },
+      "gen:tradeoff": {
+        "n": 4,
+        "correct": 3,
+        "acc": 0.75
+      },
+      "gen:underdetermined": {
+        "n": 2,
+        "correct": 1,
+        "acc": 0.5
+      },
+      "gen:version_in_force": {
+        "n": 4,
+        "correct": 2,
+        "acc": 0.5
+      },
+      "gen:withdrawn_instruction": {
+        "n": 1,
+        "correct": 1,
+        "acc": 1.0
+      },
+      "lang_id": {
+        "n": 53,
+        "correct": 53,
+        "acc": 1.0
+      },
+      "mnli_entail": {
+        "n": 70,
+        "correct": 66,
+        "acc": 0.9428571428571428
+      },
+      "musique": {
+        "n": 79,
+        "correct": 67,
+        "acc": 0.8481012658227848
+      },
+      "paws": {
+        "n": 65,
+        "correct": 56,
+        "acc": 0.8615384615384616
+      },
+      "pubmed_qa": {
+        "n": 12,
+        "correct": 12,
+        "acc": 1.0
+      },
+      "ruletaker_d0": {
+        "n": 54,
+        "correct": 43,
+        "acc": 0.7962962962962963
+      },
+      "ruletaker_d1": {
+        "n": 51,
+        "correct": 36,
+        "acc": 0.7058823529411765
+      },
+      "ruletaker_d2": {
+        "n": 53,
+        "correct": 39,
+        "acc": 0.7358490566037735
+      },
+      "spam": {
+        "n": 55,
+        "correct": 55,
+        "acc": 1.0
+      },
+      "sst5_sentiment": {
+        "n": 80,
+        "correct": 43,
+        "acc": 0.5375
+      },
+      "toxicity": {
+        "n": 70,
+        "correct": 65,
+        "acc": 0.9285714285714286
+      },
+      "vitaminc": {
+        "n": 135,
+        "correct": 106,
+        "acc": 0.7851851851851852
+      },
+      "wnli": {
+        "n": 9,
+        "correct": 7,
+        "acc": 0.7777777777777778
+      },
+      "yahoo_topics": {
+        "n": 53,
+        "correct": 34,
+        "acc": 0.6415094339622641
+      },
+      "yelp_stars": {
+        "n": 79,
+        "correct": 54,
+        "acc": 0.6835443037974683
+      }
+    }
+  },
+  "run-6 constant": {
+    "n": 1652,
+    "acc": 0.7717917675544794,
+    "correct": 1275,
+    "mean_batch_loss": 0.5270165453388261,
+    "per_task": {
+      "adequacy_hs2": {
+        "n": 65,
+        "correct": 37,
+        "acc": 0.5692307692307692
+      },
+      "ag_news": {
+        "n": 80,
+        "correct": 73,
+        "acc": 0.9125
+      },
+      "app_reviews": {
+        "n": 65,
+        "correct": 21,
+        "acc": 0.3230769230769231
+      },
+      "banking77": {
+        "n": 111,
+        "correct": 100,
+        "acc": 0.9009009009009009
+      },
+      "boardgame": {
+        "n": 39,
+        "correct": 27,
+        "acc": 0.6923076923076923
+      },
+      "boolq": {
+        "n": 52,
+        "correct": 44,
+        "acc": 0.8461538461538461
+      },
+      "clinc150": {
+        "n": 84,
+        "correct": 84,
+        "acc": 1.0
+      },
+      "contractnli": {
+        "n": 53,
+        "correct": 37,
+        "acc": 0.6981132075471698
+      },
+      "dbpedia": {
+        "n": 53,
+        "correct": 52,
+        "acc": 0.9811320754716981
+      },
+      "formality": {
+        "n": 52,
+        "correct": 31,
+        "acc": 0.5961538461538461
+      },
+      "gen:adequacy": {
+        "n": 18,
+        "correct": 9,
+        "acc": 0.5
+      },
+      "gen:all_conditions": {
+        "n": 4,
+        "correct": 2,
+        "acc": 0.5
+      },
+      "gen:borderline_rubric": {
+        "n": 2,
+        "correct": 0,
+        "acc": 0.0
+      },
+      "gen:cross_artefact": {
+        "n": 3,
+        "correct": 1,
+        "acc": 0.3333333333333333
+      },
+      "gen:dates": {
+        "n": 4,
+        "correct": 3,
+        "acc": 0.75
+      },
+      "gen:definition_scope": {
+        "n": 1,
+        "correct": 0,
+        "acc": 0.0
+      },
+      "gen:exception": {
+        "n": 5,
+        "correct": 4,
+        "acc": 0.8
+      },
+      "gen:judge_action": {
+        "n": 1,
+        "correct": 1,
+        "acc": 1.0
+      },
+      "gen:lookup_chain": {
+        "n": 4,
+        "correct": 1,
+        "acc": 0.25
+      },
+      "gen:missing_fact": {
+        "n": 2,
+        "correct": 1,
+        "acc": 0.5
+      },
+      "gen:nested_exception": {
+        "n": 1,
+        "correct": 0,
+        "acc": 0.0
+      },
+      "gen:numbers": {
+        "n": 4,
+        "correct": 0,
+        "acc": 0.0
+      },
+      "gen:precedence": {
+        "n": 5,
+        "correct": 2,
+        "acc": 0.4
+      },
+      "gen:rubric": {
+        "n": 4,
+        "correct": 2,
+        "acc": 0.5
+      },
+      "gen:running_total": {
+        "n": 3,
+        "correct": 2,
+        "acc": 0.6666666666666666
+      },
+      "gen:surface_trap": {
+        "n": 4,
+        "correct": 2,
+        "acc": 0.5
+      },
+      "gen:tie_break": {
+        "n": 4,
+        "correct": 1,
+        "acc": 0.25
+      },
+      "gen:tradeoff": {
+        "n": 4,
+        "correct": 3,
+        "acc": 0.75
+      },
+      "gen:underdetermined": {
+        "n": 2,
+        "correct": 0,
+        "acc": 0.0
+      },
+      "gen:version_in_force": {
+        "n": 4,
+        "correct": 2,
+        "acc": 0.5
+      },
+      "gen:withdrawn_instruction": {
+        "n": 1,
+        "correct": 1,
+        "acc": 1.0
+      },
+      "lang_id": {
+        "n": 53,
+        "correct": 52,
+        "acc": 0.9811320754716981
+      },
+      "mnli_entail": {
+        "n": 70,
+        "correct": 66,
+        "acc": 0.9428571428571428
+      },
+      "musique": {
+        "n": 79,
+        "correct": 64,
+        "acc": 0.810126582278481
+      },
+      "paws": {
+        "n": 65,
+        "correct": 55,
+        "acc": 0.8461538461538461
+      },
+      "pubmed_qa": {
+        "n": 12,
+        "correct": 11,
+        "acc": 0.9166666666666666
+      },
+      "ruletaker_d0": {
+        "n": 54,
+        "correct": 48,
+        "acc": 0.8888888888888888
+      },
+      "ruletaker_d1": {
+        "n": 51,
+        "correct": 39,
+        "acc": 0.7647058823529411
+      },
+      "ruletaker_d2": {
+        "n": 53,
+        "correct": 38,
+        "acc": 0.7169811320754716
+      },
+      "spam": {
+        "n": 55,
+        "correct": 55,
+        "acc": 1.0
+      },
+      "sst5_sentiment": {
+        "n": 80,
+        "correct": 43,
+        "acc": 0.5375
+      },
+      "toxicity": {
+        "n": 70,
+        "correct": 65,
+        "acc": 0.9285714285714286
+      },
+      "vitaminc": {
+        "n": 135,
+        "correct": 104,
+        "acc": 0.7703703703703704
+      },
+      "wnli": {
+        "n": 9,
+        "correct": 7,
+        "acc": 0.7777777777777778
+      },
+      "yahoo_topics": {
+        "n": 53,
+        "correct": 35,
+        "acc": 0.660377358490566
+      },
+      "yelp_stars": {
+        "n": 79,
+        "correct": 50,
+        "acc": 0.6329113924050633
+      }
+    }
+  },
+  "run-7 teacher": {
+    "n": 1652,
+    "acc": 0.8184019370460048,
+    "correct": 1352,
+    "mean_batch_loss": 0.44408323689687834,
+    "per_task": {
+      "adequacy_hs2": {
+        "n": 65,
+        "correct": 39,
+        "acc": 0.6
+      },
+      "ag_news": {
+        "n": 80,
+        "correct": 74,
+        "acc": 0.925
+      },
+      "app_reviews": {
+        "n": 65,
+        "correct": 23,
+        "acc": 0.35384615384615387
+      },
+      "banking77": {
+        "n": 111,
+        "correct": 104,
+        "acc": 0.9369369369369369
+      },
+      "boardgame": {
+        "n": 39,
+        "correct": 29,
+        "acc": 0.7435897435897436
+      },
+      "boolq": {
+        "n": 52,
+        "correct": 47,
+        "acc": 0.9038461538461539
+      },
+      "clinc150": {
+        "n": 84,
+        "correct": 84,
+        "acc": 1.0
+      },
+      "contractnli": {
+        "n": 53,
+        "correct": 44,
+        "acc": 0.8301886792452831
+      },
+      "dbpedia": {
+        "n": 53,
+        "correct": 53,
+        "acc": 1.0
+      },
+      "formality": {
+        "n": 52,
+        "correct": 31,
+        "acc": 0.5961538461538461
+      },
+      "gen:adequacy": {
+        "n": 18,
+        "correct": 13,
+        "acc": 0.7222222222222222
+      },
+      "gen:all_conditions": {
+        "n": 4,
+        "correct": 2,
+        "acc": 0.5
+      },
+      "gen:borderline_rubric": {
+        "n": 2,
+        "correct": 1,
+        "acc": 0.5
+      },
+      "gen:cross_artefact": {
+        "n": 3,
+        "correct": 2,
+        "acc": 0.6666666666666666
+      },
+      "gen:dates": {
+        "n": 4,
+        "correct": 2,
+        "acc": 0.5
+      },
+      "gen:definition_scope": {
+        "n": 1,
+        "correct": 1,
+        "acc": 1.0
+      },
+      "gen:exception": {
+        "n": 5,
+        "correct": 5,
+        "acc": 1.0
+      },
+      "gen:judge_action": {
+        "n": 1,
+        "correct": 1,
+        "acc": 1.0
+      },
+      "gen:lookup_chain": {
+        "n": 4,
+        "correct": 1,
+        "acc": 0.25
+      },
+      "gen:missing_fact": {
+        "n": 2,
+        "correct": 2,
+        "acc": 1.0
+      },
+      "gen:nested_exception": {
+        "n": 1,
+        "correct": 0,
+        "acc": 0.0
+      },
+      "gen:numbers": {
+        "n": 4,
+        "correct": 3,
+        "acc": 0.75
+      },
+      "gen:precedence": {
+        "n": 5,
+        "correct": 5,
+        "acc": 1.0
+      },
+      "gen:rubric": {
+        "n": 4,
+        "correct": 3,
+        "acc": 0.75
+      },
+      "gen:running_total": {
+        "n": 3,
+        "correct": 2,
+        "acc": 0.6666666666666666
+      },
+      "gen:surface_trap": {
+        "n": 4,
+        "correct": 3,
+        "acc": 0.75
+      },
+      "gen:tie_break": {
+        "n": 4,
+        "correct": 3,
+        "acc": 0.75
+      },
+      "gen:tradeoff": {
+        "n": 4,
+        "correct": 3,
+        "acc": 0.75
+      },
+      "gen:underdetermined": {
+        "n": 2,
+        "correct": 1,
+        "acc": 0.5
+      },
+      "gen:version_in_force": {
+        "n": 4,
+        "correct": 3,
+        "acc": 0.75
+      },
+      "gen:withdrawn_instruction": {
+        "n": 1,
+        "correct": 1,
+        "acc": 1.0
+      },
+      "lang_id": {
+        "n": 53,
+        "correct": 53,
+        "acc": 1.0
+      },
+      "mnli_entail": {
+        "n": 70,
+        "correct": 67,
+        "acc": 0.9571428571428572
+      },
+      "musique": {
+        "n": 79,
+        "correct": 76,
+        "acc": 0.9620253164556962
+      },
+      "paws": {
+        "n": 65,
+        "correct": 60,
+        "acc": 0.9230769230769231
+      },
+      "pubmed_qa": {
+        "n": 12,
+        "correct": 11,
+        "acc": 0.9166666666666666
+      },
+      "ruletaker_d0": {
+        "n": 54,
+        "correct": 52,
+        "acc": 0.9629629629629629
+      },
+      "ruletaker_d1": {
+        "n": 51,
+        "correct": 41,
+        "acc": 0.803921568627451
+      },
+      "ruletaker_d2": {
+        "n": 53,
+        "correct": 40,
+        "acc": 0.7547169811320755
+      },
+      "spam": {
+        "n": 55,
+        "correct": 55,
+        "acc": 1.0
+      },
+      "sst5_sentiment": {
+        "n": 80,
+        "correct": 40,
+        "acc": 0.5
+      },
+      "toxicity": {
+        "n": 70,
+        "correct": 63,
+        "acc": 0.9
+      },
+      "vitaminc": {
+        "n": 135,
+        "correct": 117,
+        "acc": 0.8666666666666667
+      },
+      "wnli": {
+        "n": 9,
+        "correct": 6,
+        "acc": 0.6666666666666666
+      },
+      "yahoo_topics": {
+        "n": 53,
+        "correct": 40,
+        "acc": 0.7547169811320755
+      },
+      "yelp_stars": {
+        "n": 79,
+        "correct": 46,
+        "acc": 0.5822784810126582
+      }
+    }
+  }
+}

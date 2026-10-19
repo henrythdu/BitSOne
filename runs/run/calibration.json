@@ -1,0 +1,20 @@
+{
+  "when_utc": "2026-10-15T04:23:54.441931+00:00",
+  "run_dir": "-",
+  "tarball_sha256": "c61e5dfa055b244e920969f8641b559c894f8214994abbaa257c303894d7d722",
+  "holdout_sha256_16": "f5796ad2301903ff",
+  "split": "calib",
+  "limit": 4000,
+  "batch_size": 16,
+  "global_objective": "nll (gradient-free golden-section, continuous)",
+  "by_kind_objective": "ece (log-spaced grid over [0.25, 6.0], 60 points)",
+  "temperature": 1.0156505703923981,
+  "temperature_by_kind": {
+    "noul": 0.5035636236428354,
+    "choice": 0.8629556148274228,
+    "score": 1.1296801903935303
+  },
+  "boundary_pinned": {},
+  "note": "temperature_by_kind entries equal to a grid endpoint are clamped, not fitted: that primitive has no fitted calibration",
+  "reproduction": {}
+}

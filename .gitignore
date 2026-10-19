@@ -1,0 +1,35 @@
+# Read-only inputs: the base model, the reference clones and the corpora are not this repo's content.
+BitNet Models/
+System One Models/
+Training Data/*
+
+# The certified environment and its caches.
+.venv*/
+__pycache__/
+*.py[cod]
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.hf-cli/
+
+# Run artifacts. Checkpoints and blobs are ~800 MB and reproducible from the published copy, so they
+# stay untracked. The small evidence beside them IS tracked -- the result, the corpus manifest, logs
+# and the calibration record.
+runs/**/*.safetensors
+runs/**/*.pt
+runs/**/*.npz
+runs/**/*.bin
+runs/**/*.tar.gz
+runs/**/out/checkpoints/
+runs/**/out/fetched/
+runs/**/out/.artifact-check/
+runs/**/.calib-work/
+runs/**/eval-work/
+# Per-machine read-once receipts (split path, timestamp): local by design. The numbers they carry
+# belong in the model card, not in a receipt that names this machine's filesystem.
+runs/eval/
+runs/**/smoke/out/
+runs/**/smoke/data/
+runs/**/smoke/teacher/
+runs/**/teacher/
+runs/**/tokenizer.json
