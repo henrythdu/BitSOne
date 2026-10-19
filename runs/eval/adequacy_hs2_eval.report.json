@@ -1,0 +1,18 @@
+{
+ "split": "/home/hdu/sdbuild/strands-decider/data/adequacy_hs2_eval.jsonl",
+ "rows": 234,
+ "accuracy": 0.6068376068376068,
+ "nll": 0.6707436231593801,
+ "ece": 0.04067688651303686,
+ "mean_confidence": 0.6031175615361279,
+ "by_kind": {
+  "noul": {
+   "n": 234.0,
+   "accuracy": 0.6068376068376068,
+   "ece": 0.04067688651303686
+  }
+ },
+ "checkpoint": "published artifacts",
+ "reread": true,
+ "at": "2026-10-19T18:31:41+00:00"
+}

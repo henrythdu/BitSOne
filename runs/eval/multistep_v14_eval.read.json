@@ -1,0 +1,9 @@
+{
+ "split": "/home/hdu/sdbuild/strands-decider/data/multistep_v14_eval.jsonl",
+ "reads": [
+  {
+   "at": "2026-10-19T17:00:19+00:00",
+   "reason": "first read"
+  }
+ ]
+}

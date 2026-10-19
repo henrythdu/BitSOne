@@ -1,0 +1,13 @@
+{
+ "split": "/home/hdu/sdbuild/strands-decider/data/generated_v16_eval.jsonl",
+ "reads": [
+  {
+   "at": "2026-10-19T16:52:52+00:00",
+   "reason": "first read"
+  },
+  {
+   "at": "2026-10-19T18:33:28+00:00",
+   "reason": "adapter-weights-did-not-bind: the first read scored the bare base model"
+  }
+ ]
+}

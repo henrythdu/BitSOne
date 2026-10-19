@@ -1,0 +1,18 @@
+{
+ "split": "/home/hdu/sdbuild/strands-decider/data/catchall_v20_eval.jsonl",
+ "rows": 800,
+ "accuracy": 0.6675,
+ "nll": 1.018970947220805,
+ "ece": 0.058019089816335585,
+ "mean_confidence": 0.6117771208561824,
+ "by_kind": {
+  "choice": {
+   "n": 800.0,
+   "accuracy": 0.6675,
+   "ece": 0.058019089816335585
+  }
+ },
+ "checkpoint": "published artifacts",
+ "reread": true,
+ "at": "2026-10-19T18:32:51+00:00"
+}

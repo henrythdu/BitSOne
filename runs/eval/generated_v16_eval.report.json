@@ -1,0 +1,23 @@
+{
+ "split": "/home/hdu/sdbuild/strands-decider/data/generated_v16_eval.jsonl",
+ "rows": 350,
+ "accuracy": 0.6828571428571428,
+ "nll": 0.7768409349130733,
+ "ece": 0.05192849379761801,
+ "mean_confidence": 0.6999714687319423,
+ "by_kind": {
+  "noul": {
+   "n": 125.0,
+   "accuracy": 0.792,
+   "ece": 0.08223082779475299
+  },
+  "choice": {
+   "n": 225.0,
+   "accuracy": 0.6222222222222222,
+   "ece": 0.062482478181079895
+  }
+ },
+ "checkpoint": "published artifacts",
+ "reread": true,
+ "at": "2026-10-19T18:38:50+00:00"
+}

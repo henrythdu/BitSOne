@@ -1,0 +1,9 @@
+{
+ "split": "/home/hdu/sdbuild/strands-decider/data/para_pairs_v16_eval.jsonl",
+ "reads": [
+  {
+   "at": "2026-10-19T18:04:33+00:00",
+   "reason": "first read"
+  }
+ ]
+}

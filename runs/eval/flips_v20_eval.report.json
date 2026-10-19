@@ -1,0 +1,18 @@
+{
+ "split": "/home/hdu/sdbuild/strands-decider/data/flips_v20_eval.jsonl",
+ "rows": 120,
+ "accuracy": 0.5333333333333333,
+ "nll": 0.7737238698095704,
+ "ece": 0.14053174397061258,
+ "mean_confidence": 0.673865077303946,
+ "by_kind": {
+  "noul": {
+   "n": 120.0,
+   "accuracy": 0.5333333333333333,
+   "ece": 0.14053174397061258
+  }
+ },
+ "checkpoint": "published artifacts",
+ "reread": true,
+ "at": "2026-10-19T18:33:27+00:00"
+}

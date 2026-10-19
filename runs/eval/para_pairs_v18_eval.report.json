@@ -1,0 +1,23 @@
+{
+ "split": "/home/hdu/sdbuild/strands-decider/data/para_pairs_v18_eval.jsonl",
+ "rows": 484,
+ "accuracy": 0.6115702479338843,
+ "nll": 0.9285560340027917,
+ "ece": 0.07316182760039971,
+ "mean_confidence": 0.6604295809684525,
+ "by_kind": {
+  "choice": {
+   "n": 362.0,
+   "accuracy": 0.574585635359116,
+   "ece": 0.08309761294437171
+  },
+  "noul": {
+   "n": 122.0,
+   "accuracy": 0.7213114754098361,
+   "ece": 0.11370603920177841
+  }
+ },
+ "checkpoint": "published artifacts",
+ "reread": false,
+ "at": "2026-10-19T18:29:39+00:00"
+}

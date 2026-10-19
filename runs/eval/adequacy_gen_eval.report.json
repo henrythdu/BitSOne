@@ -1,0 +1,18 @@
+{
+ "split": "/home/hdu/sdbuild/strands-decider/data/adequacy_gen_eval.jsonl",
+ "rows": 302,
+ "accuracy": 0.6423841059602649,
+ "nll": 0.5913004276546224,
+ "ece": 0.043943492619623846,
+ "mean_confidence": 0.6166826488837319,
+ "by_kind": {
+  "noul": {
+   "n": 302.0,
+   "accuracy": 0.6423841059602649,
+   "ece": 0.043943492619623846
+  }
+ },
+ "checkpoint": "published artifacts",
+ "reread": true,
+ "at": "2026-10-19T18:30:33+00:00"
+}

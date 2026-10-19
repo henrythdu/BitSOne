@@ -25,9 +25,6 @@ runs/**/out/fetched/
 runs/**/out/.artifact-check/
 runs/**/.calib-work/
 runs/**/eval-work/
-# Per-machine read-once receipts (split path, timestamp): local by design. The numbers they carry
-# belong in the model card, not in a receipt that names this machine's filesystem.
-runs/eval/
 runs/**/smoke/out/
 runs/**/smoke/data/
 runs/**/smoke/teacher/

@@ -175,7 +175,6 @@ def load(
     which this repository no longer keeps.
     """
     import torch
-    from peft import PeftModel
     from transformers import AutoTokenizer
 
     from bitsone.model import load_bitnet
@@ -186,7 +185,13 @@ def load(
     ckpt = Path(checkpoint) if checkpoint else checkpoint_dir()
     base_path = Path(base) if base else _base_model()
     model = load_bitnet(str(base_path), "offline")
-    model = PeftModel.from_pretrained(model, str(ckpt / "lora"), is_trainable=False)
+    # Build an EMPTY adapter shell, then place every tensor ourselves: `PeftModel.from_pretrained`
+    # warns about a name mismatch and then serves the bare base, which is the failure this loader
+    # exists to make impossible. One load path, and it fails closed.
+    from peft import LoraConfig, get_peft_model
+
+    adapter_cfg = LoraConfig.from_pretrained(str(ckpt / "lora"))
+    model = get_peft_model(model, adapter_cfg)
     load_adapter_weights(model, ckpt / "lora" / "adapter_model.safetensors")
     model.eval()
 
