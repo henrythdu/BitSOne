@@ -43,7 +43,7 @@ Accuracy is temperature-invariant; the per-kind fit cuts ECE 43% and raises NLL.
 | `adapter_model.safetensors`, `adapter_config.json` | Hub | the LoRA, r=16, alpha=32, 7 targets (`q,k,v,o,gate,up,down`), `task_type: FEATURE_EXTRACTION` |
 | `slot_head.pt` | Hub | the pointer head, 1,316,352 params fp32 |
 | `tokenizer.json`, `tokenizer_config.json`, `chat_template.jinja` | Hub | tokenizer (the chat template is not read at inference) |
-| `bitsone-s1_config.json` (repo) / `strands_decider_config.json` (Hub) | both, under two names | the model config, with the calibrated temperatures. Renamed in this repo on 2026-10-19, and its `base_model` changed from a machine-local path to the Hub id; the published copy differs in **name and in `base_model`** until the next release, so the two are not byte-identical by design |
+| `bitsone-s1_config.json` (repo) / the previous release's config name (Hub) | both, under two names | the model config, with the calibrated temperatures. Renamed in this repo on 2026-10-19, and its `base_model` changed from a machine-local path to the Hub id; the published copy differs in **name and in `base_model`** until the next release, so the two are not byte-identical by design |
 | `calibration.json` | Hub + repo record (`runs/run/`) | the calibration record those temperatures came from |
 | `slot_head.npz` | Hub only | the same head as numpy, 5,266,918 B — for runtimes with no torch |
 | `adapter-run7.gguf` | Hub only | the LoRA as GGUF, 86,536,320 B, 420 tensors |

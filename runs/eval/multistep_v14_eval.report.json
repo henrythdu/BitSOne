@@ -1,5 +1,5 @@
 {
- "split": "/home/hdu/sdbuild/strands-decider/data/multistep_v14_eval.jsonl",
+ "split": "multistep_v14_eval.jsonl",
  "rows": 4084,
  "accuracy": 0.7272282076395691,
  "nll": 0.62088262251041,
@@ -19,5 +19,6 @@
  },
  "checkpoint": "published artifacts",
  "reread": false,
- "at": "2026-10-19T18:04:31+00:00"
+ "at": "2026-10-19T18:04:31+00:00",
+ "split_source": "external corpus, not redistributed"
 }

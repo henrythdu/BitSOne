@@ -1,5 +1,6 @@
 {
- "split": "/home/hdu/sdbuild/strands-decider/data/multistep_v14_eval.jsonl",
+ "split": "multistep_v14_eval.jsonl",
+ "split_source": "external corpus, not redistributed",
  "reads": [
   {
    "at": "2026-10-19T17:00:19+00:00",

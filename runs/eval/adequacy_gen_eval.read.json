@@ -1,5 +1,6 @@
 {
- "split": "/home/hdu/sdbuild/strands-decider/data/adequacy_gen_eval.jsonl",
+ "split": "adequacy_gen_eval.jsonl",
+ "split_source": "external corpus, not redistributed",
  "reads": [
   {
    "at": "2026-10-19T16:50:59+00:00",

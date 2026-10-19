@@ -1,5 +1,6 @@
 {
- "split": "/home/hdu/sdbuild/strands-decider/data/generated_v16_eval.jsonl",
+ "split": "generated_v16_eval.jsonl",
+ "split_source": "external corpus, not redistributed",
  "reads": [
   {
    "at": "2026-10-19T16:52:52+00:00",

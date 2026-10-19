@@ -1,5 +1,6 @@
 {
- "split": "/home/hdu/sdbuild/strands-decider/data/catchall_v20_eval.jsonl",
+ "split": "catchall_v20_eval.jsonl",
+ "split_source": "external corpus, not redistributed",
  "reads": [
   {
    "at": "2026-10-19T16:51:53+00:00",

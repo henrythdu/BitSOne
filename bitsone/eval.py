@@ -31,6 +31,7 @@ from bitsone import corpus
 ROOT = Path(__file__).resolve().parents[1]
 RECEIPTS = ROOT / "runs" / "eval"
 BINS = 10
+EXTERNAL = "external corpus, not redistributed"
 
 
 def ece(pairs: list[tuple[float, float]]) -> float:
@@ -74,7 +75,13 @@ def claim(split: Path, allow_reread: str | None) -> None:
             "reason": allow_reread or "first read",
         }
     )
-    path.write_text(json.dumps({"split": str(split), "reads": prior}, indent=1) + "\n", encoding="utf-8")
+    # The receipt records WHICH split and that it came from outside the tree -- not a path into this
+    # machine or into the corpus checkout. A clone cannot reconstruct that directory and does not
+    # need to; what read-once has to survive is the name of the split and the fact it was read.
+    path.write_text(
+        json.dumps({"split": split.name, "split_source": EXTERNAL, "reads": prior}, indent=1) + "\n",
+        encoding="utf-8",
+    )
 
 
 def main() -> int:
@@ -132,7 +139,8 @@ def main() -> int:
         for k, c in per_kind.items()
     }
     report: dict[str, Any] = {
-        "split": str(split),
+        "split": split.name,
+        "split_source": EXTERNAL,
         "rows": rows,
         "accuracy": hits / rows,
         "nll": nll / rows,

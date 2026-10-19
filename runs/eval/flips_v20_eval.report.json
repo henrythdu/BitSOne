@@ -1,5 +1,5 @@
 {
- "split": "/home/hdu/sdbuild/strands-decider/data/flips_v20_eval.jsonl",
+ "split": "flips_v20_eval.jsonl",
  "rows": 120,
  "accuracy": 0.5333333333333333,
  "nll": 0.7737238698095704,
@@ -14,5 +14,6 @@
  },
  "checkpoint": "published artifacts",
  "reread": true,
- "at": "2026-10-19T18:33:27+00:00"
+ "at": "2026-10-19T18:33:27+00:00",
+ "split_source": "external corpus, not redistributed"
 }

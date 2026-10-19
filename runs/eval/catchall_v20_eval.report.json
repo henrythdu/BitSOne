@@ -1,5 +1,5 @@
 {
- "split": "/home/hdu/sdbuild/strands-decider/data/catchall_v20_eval.jsonl",
+ "split": "catchall_v20_eval.jsonl",
  "rows": 800,
  "accuracy": 0.6675,
  "nll": 1.018970947220805,
@@ -14,5 +14,6 @@
  },
  "checkpoint": "published artifacts",
  "reread": true,
- "at": "2026-10-19T18:32:51+00:00"
+ "at": "2026-10-19T18:32:51+00:00",
+ "split_source": "external corpus, not redistributed"
 }

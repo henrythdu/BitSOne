@@ -1,5 +1,6 @@
 {
- "split": "/home/hdu/sdbuild/strands-decider/data/para_pairs_v16_eval.jsonl",
+ "split": "para_pairs_v16_eval.jsonl",
+ "split_source": "external corpus, not redistributed",
  "reads": [
   {
    "at": "2026-10-19T18:04:33+00:00",

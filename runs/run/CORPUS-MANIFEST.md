@@ -39,7 +39,7 @@ counts those. **Run-7 is therefore 3,738 steps.**
 | `adequacy_gen.jsonl` | 1,300 | `afbf3dc350456320` |
 | **sum** | **123,339** | |
 
-Read from `/home/hdu/sdbuild/strands-decider/data/`. The first row of each begins an
+Read from `<corpus-dir>/data/`. The first row of each begins an
 absolute offset: train_v5 `[0 .. 100,448]`, multistep `[100,449 .. 113,357]`,
 v16p `[113,358 .. 115,505]`, v18p `[115,506 .. 117,172]`, hs2 `[117,173 .. 122,038]`,
 gen `[122,039 .. 123,338]`. **v21b:29-31 states this same semantics** ("indices into
@@ -58,7 +58,7 @@ and that guard cannot fire when two rows share an option count.
 |---|---|---|
 | `runs/run7-full-corpus/teacher/teacher_v20.jsonl` | 72,434 | `c6048ddc21c4cc347980b38d0561f8dd849daca42c970f9103ea482681ee0c5b` |
 
-Built 2026-10-10 by `strands_decider.data.distill` with no GPU, as a merge of two
+Built 2026-10-10 by `<corpus>.data.distill` with no GPU, as a merge of two
 committed files. Schema `{"i": int, "probs": [float, ...]}` — an offset plus a
 distribution over option slots, **not a row count**. 59,525 of its rows come from the
 teacher's agreement with gold on `train_v5` and 12,909 are appended `v14` replay, which

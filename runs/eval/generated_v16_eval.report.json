@@ -1,5 +1,5 @@
 {
- "split": "/home/hdu/sdbuild/strands-decider/data/generated_v16_eval.jsonl",
+ "split": "generated_v16_eval.jsonl",
  "rows": 350,
  "accuracy": 0.6828571428571428,
  "nll": 0.7768409349130733,
@@ -19,5 +19,6 @@
  },
  "checkpoint": "published artifacts",
  "reread": true,
- "at": "2026-10-19T18:38:50+00:00"
+ "at": "2026-10-19T18:38:50+00:00",
+ "split_source": "external corpus, not redistributed"
 }

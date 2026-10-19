@@ -72,8 +72,8 @@ LOAD on the file, not on the weight, so both arms read the same 72,434 rows and
 attach them to the same corpus rows; only the multiplier at `:662` changes.
 
 ```text
-[strands-decider] teacher distributions on 72,434 of 123,339 rows (weight 1.0)   <- arm A
-[strands-decider] teacher distributions on 72,434 of 123,339 rows (weight 0.0)   <- arm B
+[<corpus-dir>] teacher distributions on 72,434 of 123,339 rows (weight 1.0)   <- arm A
+[<corpus-dir>] teacher distributions on 72,434 of 123,339 rows (weight 0.0)   <- arm B
 ```
 
 72,434 is the teacher file's own row count, so ALL of its rows resolved. The
@@ -192,8 +192,8 @@ run-7 step rate" would put a rate error in a new place.
 ## What the same two runs do confirm
 
 ```text
-[strands-decider] trainable 22,943,232 / 2,435,763,712 (0.94%)    both arms
-[strands-decider] train=119,623 val=3,716                         both arms
+[<corpus-dir>] trainable 22,943,232 / 2,435,763,712 (0.94%)    both arms
+[<corpus-dir>] train=119,623 val=3,716                         both arms
 ```
 
 - `trainable` matches run-5's and run-6's recorded line exactly, so the
@@ -206,11 +206,11 @@ run-7 step rate" would put a rate error in a new place.
 
 ```bash
 cd runs/run7-full-corpus/smoke
-PYTHONPATH=/home/hdu/sdbuild/strands-decider/src \
+PYTHONPATH=<corpus-dir>/src \
 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \
-/home/hdu/Projects/BitSOne/.venv-s1/bin/python -m strands_decider.cli train \
+<home>/Projects/BitSOne/.venv-s1/bin/python -m <corpus>.cli train \
   --config config-teacher-on.yaml \
-  --base-model "/home/hdu/Projects/BitSOne/BitNet Models/bitnet-b1.58-2b-4t"
+  --base-model "<home>/Projects/BitSOne/BitNet Models/bitnet-b1.58-2b-4t"
 ```
 
 Arm B is the same line with `config-teacher-off.yaml`. Logs kept here as

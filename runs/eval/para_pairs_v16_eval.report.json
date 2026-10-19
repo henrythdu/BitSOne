@@ -1,5 +1,5 @@
 {
- "split": "/home/hdu/sdbuild/strands-decider/data/para_pairs_v16_eval.jsonl",
+ "split": "para_pairs_v16_eval.jsonl",
  "rows": 678,
  "accuracy": 0.6843657817109144,
  "nll": 0.7729928873674765,
@@ -19,5 +19,6 @@
  },
  "checkpoint": "published artifacts",
  "reread": false,
- "at": "2026-10-19T18:20:11+00:00"
+ "at": "2026-10-19T18:20:11+00:00",
+ "split_source": "external corpus, not redistributed"
 }
