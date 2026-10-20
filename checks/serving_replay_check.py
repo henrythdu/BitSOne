@@ -63,17 +63,19 @@ def main() -> int:
     try:
         import torch
     except ImportError:
-        sys.exit("FAIL: torch is not installed, so this gate cannot read the code it claims about")
+        print("FAIL: torch is not installed, so this gate cannot read the code it claims about", file=sys.stderr)
+        sys.exit(2)
     if not torch.cuda.is_available():
-        sys.exit("FAIL: no CUDA device, so the served path cannot be exercised here")
+        print("FAIL: no CUDA device, so the served path cannot be exercised here", file=sys.stderr)
+        sys.exit(2)
 
     from bitsone import corpus, serve
 
     try:
         engine = serve.load()
-        check(True, "the published artifacts load (base + adapter + head, digest-verified)")
+        check(True, "the published artifacts load (base + adapter + head)")
     except (SystemExit, OSError, RuntimeError, ValueError) as exc:
-        check(False, "the published artifacts load (base + adapter + head, digest-verified)", str(exc))
+        check(False, "the published artifacts load (base + adapter + head)", str(exc))
         return 1
 
     row = pick_row(args.corpus_dir, args.row)
@@ -119,8 +121,12 @@ def main() -> int:
         "every key token lies after the options block, not in the state prefix",
         f"first key at {min(offsets[k][0] for k in keys)}, options begin at {opts_at}",
     )
-    text = first.text
-    check(all(0 <= k < 200_000 for k in keys) and bool(text), "key indices are plausible positions in the text")
+    n_tokens = len(offsets)
+    check(
+        all(0 <= k < n_tokens for k in keys),
+        "every key index addresses a token of the prompt",
+        f"max index {max(keys)} of {n_tokens} tokens",
+    )
 
     order = list(range(len(options)))[::-1]
     permuted = engine.answer(state, kind, instructions, options, option_order=order)

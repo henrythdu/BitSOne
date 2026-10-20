@@ -21,7 +21,8 @@ No torch, no GPU.
 
 Run:  .venv-s1/bin/python checks/corpus_render_check.py [--corpus-dir DIR] [--limit N]
       .venv-s1/bin/python checks/corpus_render_check.py --write-digest
-Exit: 0 on PASS, 1 on any failed assertion or a digest mismatch.
+Exit: 0 on PASS, 1 on a failed assertion or a digest mismatch, 2 when the corpus or a required
+      input is missing, so nothing could be checked.
 """
 
 from __future__ import annotations
@@ -66,6 +67,8 @@ def check_geometry(name: str, row_id: str, text: str, rendered: corpus.Rendered)
             return
         cursor = end
         chunk = text[start:end]
+        if "\n" in chunk:
+            fail("span is one line", f"{name}:{row_id}: span {i} contains a line break")
         if not chunk.strip():
             fail("span is not empty", f"{name}:{row_id}: span {i} is blank")
         if not chunk.startswith(f"{i + 1}. "):

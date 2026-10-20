@@ -1,26 +1,19 @@
-"""serve — the one owned entry point: render, read the option keys, score them.
+"""serve — one entry point: render the request, read the option keys, score them.
 
-Why this module exists: rendering the request, binding each option to its key token and scoring it
-are three steps that must agree, and a caller assembling them by hand has three chances to pick the
-wrong token and still get plausible numbers. Here they are one call, so the binding cannot be
-forgotten.
+The three steps must agree. `Engine.answer` runs all three in one call, so a caller cannot bind an
+option to the wrong token.
 
-What it does, in order:
-
-  1. `bitsone.corpus.build_prompt` renders the request (deterministic; pinned by
-     `checks/corpus_render_check.py`).
-  2. `bitsone.corpus.key_token_indices` picks, for every option, the last token FULLY inside that
-     option's span — the position the head scores.
+  1. `bitsone.corpus.build_prompt` renders the request. It is deterministic.
+  2. `bitsone.corpus.key_token_indices` selects, for each option, the last token fully inside that
+     option's span.
   3. `bitsone.pointer.PointerHead` scores each option's hidden state against the query position in
-     fp32, with masked slots at -inf.
+     fp32. Masked slots are -inf.
 
-Nothing third-party is imported for inference: the torso comes from `transformers`/`peft` (a
-declared dependency), and everything above it is ours.
+The torso comes from `transformers` and `peft`. All code above the torso is ours.
 
-The checkpoint directory is located structurally (`bitsone.paths.checkpoint_dir`), and the loader
-reads only the files it needs — `lora/`, `slot_head.pt`, and the tokenizer. The run's config file
-is deliberately NOT read: its filename is fixed by the published artifacts and is not ours to
-depend on, so serving does not depend on it at all.
+`bitsone.paths.checkpoint_dir` finds the checkpoint by its structure. The loader reads `lora/`,
+`slot_head.pt` and the tokenizer. It does not read the run config file, whose name belongs to the
+published artifacts.
 """
 
 from __future__ import annotations
@@ -46,7 +39,7 @@ class Response:
 
     @property
     def best(self) -> str:
-        """The option label with the highest score — the answer, in the renderer's own terms."""
+        """The option label with the highest score."""
         best = max(range(len(self.logits)), key=self.logits.__getitem__)
         return self.slot_labels[best]
 
@@ -70,7 +63,7 @@ class Engine:
     def render(
         self, state: Any, kind: str, instructions: Any, options: list[list[str]], option_order: list[int] | None = None
     ) -> tuple[str, corpus.Rendered]:
-        """The prompt bytes and the binding back to options — one implementation, shared."""
+        """The prompt text and the binding to the options."""
         return corpus.build_prompt(state, kind, instructions, options, option_order)
 
     def _inputs(self, text: str) -> tuple[Any, list[tuple[int, int]]]:
@@ -81,7 +74,7 @@ class Engine:
     def answer(
         self, state: Any, kind: str, instructions: Any, options: list[list[str]], option_order: list[int] | None = None
     ) -> Response:
-        """Score every option for one request. Raises rather than guessing a key position."""
+        """Score every option for one request. Raises when a key position cannot be found."""
         import torch
 
         text, rendered = self.render(state, kind, instructions, options, option_order)
@@ -111,15 +104,14 @@ class Engine:
 
 
 def _torso(model: Any) -> Any:
-    """The decoder stack WITHOUT the vocabulary projection.
+    """The decoder stack without the vocabulary projection.
 
-    A full forward computes `lm_head` for every prompt token -- 128,256 x 2,560 -- and its output is
-    never read here, because the answer comes from the pointer head over hidden states. Skipping it
-    is measurable and free of risk: with the shipped checkpoint, hidden states and head logits are
-    bit-identical between the two paths and a request is ~3% faster (49.0 -> 47.6 ms warm).
+    A full forward computes `lm_head` (128,256 x 2,560) for every prompt token, and this module never
+    reads that output. With the shipped checkpoint, hidden states and head logits are identical with
+    and without it, and one request is about 3% faster.
 
-    Duck-typed rather than named, so the plain model and the adapter-wrapped one both work; falls
-    back to the full model when no stack can be found, which only costs the projection.
+    The stack is found by attribute, so the plain model and the adapter-wrapped model both work. If
+    no stack is found, the full model is returned and only the projection is wasted.
     """
     inner = getattr(model, "base_model", None)  # PeftModel -> LoraModel
     inner = getattr(inner, "model", None) or getattr(model, "model", None)
@@ -167,6 +159,16 @@ def load_adapter_weights(model: Any, path: Path) -> None:
             f"{path}: {len(unmatched)} adapter tensor(s) do not fit this model, e.g. {unmatched[0]}.\n"
             "  Refusing to serve: a partly placed adapter is indistinguishable from no adapter."
         )
+    # COVERAGE IN THE OTHER DIRECTION. Unmatched tensors mean the file carries things this model
+    # cannot use; a parameter with no tensor means PEFT's own initialisation survives -- a random A or
+    # a zero B that the file never overwrote. The zero-B check below catches the second; nothing caught
+    # a missing A, which leaves random features feeding a trained projection.
+    missing = sorted(expected - set(placed))
+    if missing:
+        raise SystemExit(
+            f"{path}: {len(missing)} adapter parameter(s) have no tensor in this file, e.g. {missing[0]}.\n"
+            "  Refusing to serve: those keep PEFT's initialisation, not the trained values."
+        )
 
     from peft import set_peft_model_state_dict
 
@@ -204,6 +206,12 @@ def load(
     ckpt = Path(checkpoint) if checkpoint else checkpoint_dir()
     base_path = Path(base) if base else _base_model()
     model = load_bitnet(str(base_path), "offline")
+    # The head's width is read from the BASE config, before PEFT wraps the model: after wrapping,
+    # `model.config` is the LoRA config, which has no `hidden_size`, and a default there would build a
+    # 2560-wide head for any base and turn a base/head mismatch into a shape error at load_state_dict.
+    base_hidden = int(getattr(model.config, "hidden_size", 0))
+    if base_hidden <= 0:
+        raise SystemExit(f"{base_path}: config carries no hidden_size, so the head's width cannot be checked")
     # Build an EMPTY adapter shell, then place every tensor ourselves: `PeftModel.from_pretrained`
     # warns about a name mismatch and then serves the bare base, which is the failure this loader
     # exists to make impossible. One load path, and it fails closed.
@@ -212,6 +220,9 @@ def load(
     adapter_cfg = LoraConfig.from_pretrained(str(ckpt / "lora"))
     model = get_peft_model(model, adapter_cfg)
     load_adapter_weights(model, ckpt / "lora" / "adapter_model.safetensors")
+    if device != "cuda":
+        # The loader places the model on CUDA. Another device is a move after load.
+        model = model.to(device)
     model.eval()
 
     tok_dir = ckpt if (ckpt / "tokenizer.json").is_file() else base_path
@@ -219,7 +230,7 @@ def load(
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
 
-    hidden = int(getattr(model.config, "hidden_size", HIDDEN))
+    hidden = base_hidden
     head = PointerHead(hidden=hidden)
     state = torch.load(ckpt / "slot_head.pt", map_location=device, weights_only=True)
     try:

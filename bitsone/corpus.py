@@ -133,9 +133,12 @@ def render_state(state: Any) -> str:
 def option_block(pairs: list[tuple[str, str]]) -> tuple[str, list[tuple[int, int]]]:
     """Number the options from 1 and return each line's span within the block.
 
-    Descriptions collapse to a single line so one option is always exactly one line, which is
-    what makes the span unambiguous for the pointer head.
+    A name must not contain a line break. A description is collapsed to one line. Therefore one
+    option is exactly one line, and a span can mark it without ambiguity.
     """
+    for name, _ in pairs:
+        if "\n" in name or "\r" in name:
+            raise ValueError(f"option name contains a line break: {name!r}")
     lines: list[str] = []
     spans: list[tuple[int, int]] = []
     cursor = 0

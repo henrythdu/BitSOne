@@ -1,18 +1,15 @@
 #!/usr/bin/env python3
-"""checks/imports_check.py — every import in the executable tree is one we can account for.
+"""checks/imports_check.py — every import in the executable tree is stdlib, declared, or ours.
 
-The rule this enforces: our code is ours. An import that is neither stdlib, nor declared in
-`requirements.txt`, nor one of our own packages means one of two things, and both are silent
-until they break — a dependency nobody declared, or somebody else's code that arrived through
-`sys.path`. So this reads the source and names the offender instead of trusting that none
-exists. Stdlib-only itself: it must run in CI, where there is no torch and no GPU.
+Each absolute import must be in the Python standard library, or declared in `requirements.txt`, or
+be `bitsone` / `checks`. Any other import fails this check. The check reads the source; it does not
+import the modules. It uses the standard library only, so it runs in CI without torch.
 
-What counts as ours: `bitsone` and `checks`. What counts as declared: the distribution names in
-`requirements.txt`, mapped to their import names where they differ, plus `TRANSITIVE` — the ones
-those packages bring in themselves. Anything else fails.
+The scan covers every Python file in the executable tree: the root scripts, `bitsone/`, `checks/`
+and `runs/` (run scripts). Read-only input trees and the virtualenv are skipped.
 
 Run:  python checks/imports_check.py
-Exit: 0 when every absolute import is accounted for, 1 otherwise, printing each offender.
+Exit: 0 when every absolute import is accounted for, 1 when one is not.
 """
 
 from __future__ import annotations
@@ -24,6 +21,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 OWN = {"bitsone", "checks"}
+SCANNED = ("bitsone", "checks", "runs")
 SKIP_DIRS = {"src", "System One Models", "BitNet Models", "Training Data", ".venv-s1", ".git"}
 
 # Distribution name -> import name. Empty today (torch, transformers and peft import under their own
@@ -47,9 +45,9 @@ def declared() -> set[str]:
 
 
 def files() -> list[Path]:
-    """Every Python file we own: the three packages at the root, and root-level scripts."""
+    """Every Python file in the scanned trees, plus the root scripts."""
     out = [p for p in sorted(ROOT.glob("*.py"))]
-    for pkg in sorted(OWN):
+    for pkg in SCANNED:
         base = ROOT / pkg
         if base.is_dir():
             out += [p for p in sorted(base.rglob("*.py")) if not SKIP_DIRS & set(p.parts)]
@@ -87,13 +85,11 @@ def imports_of(path: Path) -> list[tuple[int, str]]:
 
 
 def path_roots(path: Path) -> list[tuple[int, str]]:
-    """`sys.path.insert` calls that put a PACKAGE DIRECTORY on the path.
+    """`sys.path.insert` calls that are not `sys.path.insert(0, str(ROOT))`.
 
-    Why this is a failure and not a style point: adding `bitsone/` itself to `sys.path` gives every
-    module in it a second name (`import corpus` alongside `bitsone.corpus`). Two names for one
-    module is how the package split reappeared after it was consolidated, and it also lets a file
-    in the package shadow anything else on the path. The repository root is the one root; a module
-    inside a package reaches its siblings through the package.
+    One import root is allowed: the repository root. Adding `bitsone/` to `sys.path` gives each
+    module in it a second name (`import corpus` and `bitsone.corpus`), and a file in the package can
+    then shadow other modules on the path.
     """
     try:
         tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
@@ -109,7 +105,7 @@ def path_roots(path: Path) -> list[tuple[int, str]]:
         # insert(index, path): the PATH is the second argument, the index is the first.
         target = node.args[1] if len(node.args) > 1 else node.args[0]
         text = ast.unparse(target)
-        if ".parent)" in text and ".parents" not in text:
+        if text != "str(ROOT)":
             out.append((node.lineno, text))
     return out
 
@@ -123,8 +119,8 @@ def main() -> int:
         rel = path.relative_to(ROOT)
         for lineno, expr in path_roots(path):
             offenders.append(
-                f"{rel}:{lineno}: puts a package directory on sys.path ({expr}) — "
-                "that is a second import root for the same modules"
+                f"{rel}:{lineno}: adds {expr} to sys.path — the only permitted form is "
+                "sys.path.insert(0, str(ROOT))"
             )
         for lineno, mod in imports_of(path):
             if mod not in allowed:
@@ -133,9 +129,9 @@ def main() -> int:
     if offenders:
         print("FAIL: unaccounted imports in the executable tree\n")
         print("\n".join(offenders))
-        print("\nEither declare the dependency in requirements.txt, or delete the code that needs it.")
+        print("\nDeclare the dependency in requirements.txt, or remove the code that needs it.")
         return 1
-    print(f"PASS: {checked} files imported only stdlib, declared packages and our own ({', '.join(sorted(OWN))})")
+    print(f"PASS: {checked} files import only stdlib, declared packages and {'/'.join(sorted(OWN))}")
     return 0
 
 

@@ -45,14 +45,15 @@ from bitsone.pointer import PointerHead, dense_batch, gold_ragged, pointer_soft_
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = ROOT / "BitNet Models" / "bitnet-b1.58-2b-4t"
-SHIPPED = ROOT / "runs" / "run" / "out" / "fetched" / "checkpoints"
 
 
-def load_base(base: Path, adapter: Path | None, tokenizer_from: Path | None = None) -> tuple[Any, Any]:
+def load_base(
+    base: Path, adapter: Path | None, tokenizer_from: Path | None = None, device: str = "cuda"
+) -> tuple[Any, Any]:
     """The packed base in `offline` mode (the artifact runs 5-7 trained), plus a tokenizer.
 
     With `adapter`, the shipped LoRA is attached and frozen, so the cached features are the deployed
-    model's. `load_bitnet` asserts the EFFECTIVE quantization mode, because the repo's own config wins
+    model's. `load_bitnet` requires the EFFECTIVE quantization mode, because the repo's own config wins
     over the argument and a wrong mode would otherwise be silent.
     """
     from transformers import AutoTokenizer
@@ -62,10 +63,20 @@ def load_base(base: Path, adapter: Path | None, tokenizer_from: Path | None = No
         p.requires_grad_(False)
     model.eval()
     if adapter is not None:
-        from peft import PeftModel
+        # THE SAME LOADER SERVING USES. `PeftModel.from_pretrained` warns about a name mismatch and
+        # then keeps LoRA's zero-initialised B matrices, so the "adapter-attached" features would be
+        # the bare base's while the run reported success. `load_adapter_weights` translates the names
+        # and refuses rather than warn.
+        from peft import LoraConfig, get_peft_model
 
-        model = PeftModel.from_pretrained(model, str(adapter), is_trainable=False)
+        from bitsone.serve import load_adapter_weights
+
+        model = get_peft_model(model, LoraConfig.from_pretrained(str(adapter)))
+        load_adapter_weights(model, Path(adapter) / "adapter_model.safetensors")
         model.eval()
+    if device != "cuda":
+        # The loader places the model on CUDA. Another device is a move after load.
+        model = model.to(device)
     tok_dir = tokenizer_from or (adapter.parent if adapter else base)
     tok = AutoTokenizer.from_pretrained(str(tok_dir), fix_mistral_regex=False)
     if tok.pad_token is None:
@@ -313,6 +324,7 @@ def main() -> int:
         Path(args.base_model),
         Path(args.adapter) if args.adapter else None,
         tokenizer_from=Path(args.adapter) if args.adapter else None,
+        device=args.device,
     )
     print(f"base: {args.base_model}{'  + adapter ' + args.adapter if args.adapter else '  (no adapter)'}")
 

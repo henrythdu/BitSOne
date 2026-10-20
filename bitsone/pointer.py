@@ -5,9 +5,11 @@ question slot against each option's own hidden state instead of choosing among 2
 
     logit_k = (LayerNorm(h_query) W_q) · (LayerNorm(h_key_k) W_k)ᵀ / sqrt(d)
 
-so K is unbounded, no option is privileged by position, and the head is ~1.3M params instead of
-a 128,256-way vocabulary read. The head runs in fp32 even when the torso is bf16 — a low-precision
-classifier is a needless source of calibration error.
+so K is unbounded and the head holds no positional parameter at all. What it does NOT have: option
+k's vector still comes from a causal pass, so it has read options 1..k and not the ones after it —
+see `checks/serving_replay_check.py`, which measures how often that changes the answer. The head is
+~1.3M params instead of a 128,256-way vocabulary read. It runs in fp32 even when the torso is bf16 —
+a low-precision classifier is a needless source of calibration error.
 
 The dump exists so Stage A is a single-variable test: hidden states are produced ONCE on the
 deployment path (packed ternary, offline) and the head is then trained on cached vectors, with no
@@ -27,7 +29,7 @@ D_HEAD = 256  # pointer dimension, fixed by the pre-registration
 
 
 class PointerHead(nn.Module):
-    """LayerNorm -> W_q / W_k -> scaled dot product. K-independent, position-blind by construction.
+    """LayerNorm -> W_q / W_k -> scaled dot product. K-independent: no parameter knows the slot index.
 
     `checks/pointer_head_check.py` recomputes this formula from the raw weights rather than
     comparing it to any reference class. Every axis below is a pre-registered choice, not a flag:
@@ -125,11 +127,10 @@ def dense_batch(
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     """Ragged dump -> (q [B,H], k [B,maxK_batch,H], mask [B,maxK_batch]), non-mutating.
 
-    DENSIFIES ONE BATCH ONLY (256 rows), never the whole split: transient peak is 256 × 16 × 2560 × 4 B
-    ≈ 42 MB, not the 8.1 GiB a whole-split [N, maxK, H] fp32 tensor would cost — and the ragged dump is
-    1.20 GiB where that dense tensor would be 38.3 GiB bf16. Both were verified by arithmetic before
-    they were verified by OOM, which is the only reason to state them here: so nobody "optimises" this
-    into the version that does not fit (peer review, run-4 point 5).
+    DENSIFIES ONE BATCH ONLY (256 rows), never the whole split: transient peak is
+    256 × 16 × 2560 × 4 B ≈ 42 MB. The dense alternative is N × maxK × H: at the corpus' 123,339 rows
+    and maxK 16 that is ≈ 20.2 GB fp32 (18.8 GiB). The numbers are here so nobody "optimises" this
+    into the version that does not fit.
     """
     off = dump["offset"]
     h = dump["k"].shape[1]

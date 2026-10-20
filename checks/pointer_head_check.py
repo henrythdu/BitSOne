@@ -84,7 +84,8 @@ def main() -> int:
     try:
         import torch
     except ImportError:
-        sys.exit("FAIL: torch is not installed, so this gate cannot read the code it claims about")
+        print("FAIL: torch is not installed, so this gate cannot read the code it claims about", file=sys.stderr)
+        return 2
 
     from bitsone.pointer import HIDDEN, PointerHead
 
@@ -146,7 +147,19 @@ def main() -> int:
     )
     check(
         all(p.shape[0] != 1 or p.dim() == 1 for p in named.values()),
-        "no head parameter is shaped by slot index (position blindness)",
+        "no head parameter is shaped by slot index",
+    )
+    # THE CLAIM THAT MATTERS, AND THE ONE THAT CAN FAIL: a key's logit must not depend on how many
+    # keys follow it. The parameter-shape test above only rules out a head with a slot dimension; this
+    # one catches a head that mixes keys (a softmax across K, a running mean over slots) and would
+    # still be shape-legal. It reads the head's own forward, so it fails if that changes.
+    with torch.no_grad():
+        wide = head(hq[:1], hk[:1], torch.ones(1, args.slots, dtype=torch.bool))
+        narrow = head(hq[:1], hk[:1, :3], torch.ones(1, 3, dtype=torch.bool))
+    check(
+        bool(torch.allclose(wide[0, :3], narrow[0], atol=1e-6, rtol=1e-6)),
+        "a key's logit does not depend on the keys that follow it",
+        f"K={args.slots} vs K=3: max|Δ| = {float((wide[0, :3] - narrow[0]).abs().max()):.3e}",
     )
 
     with torch.no_grad():

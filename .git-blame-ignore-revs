@@ -9,7 +9,7 @@
 # behaviour must NOT be listed, because skipping it would hide the behaviour
 # change too.
 
-# ruff format sweep over checks/ and s1/ -- quote style (single -> double) plus
-# the reflow that follows. 37 files, no semantic change. Three file:line
-# citations were remapped in the same commit.
+# ruff format sweep over checks/ -- quote style (single -> double) plus the
+# reflow that follows. 37 files, no semantic change. Three file:line citations
+# were remapped in the same commit.
 c2d8e68

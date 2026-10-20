@@ -54,8 +54,28 @@ def receipt_path(split: Path) -> Path:
     return RECEIPTS / f"{split.stem}.read.json"
 
 
-def claim(split: Path, allow_reread: str | None) -> None:
-    """Refuse a second read of a split unless a reason is given; record either way."""
+def refuse_if_read(split: Path, allow_reread: str | None) -> None:
+    """Refuse a second read of a split unless a reason is given. Writes NOTHING.
+
+    The refusal is a read; the record is written only after rows were actually scored
+    (`record_read`). Writing the receipt first meant a run that died loading weights marked the
+    split as read and then refused the legitimate first read — the read-once rule turning a crash
+    into a permanent loss of the split.
+    """
+    path = receipt_path(split)
+    if path.is_file() and not allow_reread:
+        try:
+            prior = json.loads(path.read_text(encoding="utf-8")).get("reads", [])
+        except (OSError, ValueError):
+            prior = []
+        raise SystemExit(
+            f"{split.name} has already been read ({len(prior)} time(s)): {path}\n"
+            '  A second read is a decision, not a rerun. Pass --allow-reread "<why>".'
+        )
+
+
+def record_read(split: Path, allow_reread: str | None) -> None:
+    """Append this read to the receipt, once the rows have been scored."""
     RECEIPTS.mkdir(parents=True, exist_ok=True)
     path = receipt_path(split)
     prior: list[dict[str, Any]] = []
@@ -64,11 +84,6 @@ def claim(split: Path, allow_reread: str | None) -> None:
             prior = json.loads(path.read_text(encoding="utf-8")).get("reads", [])
         except (OSError, ValueError):
             prior = []
-        if not allow_reread:
-            raise SystemExit(
-                f"{split.name} has already been read ({len(prior)} time(s)): {path}\n"
-                '  A second read is a decision, not a rerun. Pass --allow-reread "<why>".'
-            )
     prior.append(
         {
             "at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
@@ -98,7 +113,7 @@ def main() -> int:
     split = Path(args.split)
     if not split.is_file():
         raise SystemExit(f"{split}: not a file")
-    claim(split, args.allow_reread)
+    refuse_if_read(split, args.allow_reread)
 
     from bitsone.serve import load
 
@@ -119,11 +134,19 @@ def main() -> int:
         rows += 1
         resp = engine.answer(row["state"], row["kind"], row["instructions"], row["options"])
         gold = int(row["label"])
+        # BY LABEL, not by index. `label` indexes the row's own options; the renderer's slots are its
+        # own order, which `noul` fixes (false, true) regardless of how the row listed them. Comparing
+        # indices scores the wrong slot the moment a row's order disagrees with the renderer's.
+        gold_label = str(corpus.pairs_of(row["kind"], row["options"])[gold][0])
+        if gold_label not in resp.slot_labels:
+            raise SystemExit(
+                f"{split.name}: gold label {gold_label!r} is not among the rendered options {resp.slot_labels}"
+            )
+        gold_slot = resp.slot_labels.index(gold_label)
         probs = resp.probs
-        best = max(range(len(probs)), key=probs.__getitem__) if probs else -1
-        hit = best == gold
+        hit = resp.best == gold_label
         hits += int(hit)
-        nll -= resp.log_probs[gold] if 0 <= gold < len(resp.log_probs) else 0.0
+        nll -= resp.log_probs[gold_slot]
         conf = max(probs) if probs else 0.0
         conf_all.append((conf, float(hit)))
         kind = str(row["kind"])
@@ -133,6 +156,10 @@ def main() -> int:
 
     if not rows:
         raise SystemExit(f"{split}: no rows read")
+
+    # THE READ HAPPENED, so it is recorded now — not before the model loaded, which is how a crashed
+    # run used to burn the split.
+    record_read(split, args.allow_reread)
 
     by_kind: dict[str, dict[str, float]] = {
         k: {"n": float(c["n"]), "accuracy": c["hits"] / c["n"], "ece": ece(per_kind_conf.get(k, []))}

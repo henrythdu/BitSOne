@@ -20,7 +20,7 @@ except ImportError:  # pragma: no cover - only on older transformers
 
 
 def load_bitnet(repo: str, mode: str) -> Any:
-    """Load a BitNet repo and REQUIRE the effective quantization mode to be `mode`.
+    """Load a BitNet repo on the CUDA device and REQUIRE the effective quantization mode to be `mode`.
 
     The effective mode is decided by the REPO's own config.json, because the loader prefers a
     checkpoint's existing quantization_config over the argument passed here. So a call site that
@@ -39,10 +39,13 @@ def load_bitnet(repo: str, mode: str) -> Any:
     # NOTE: config.quantization_config is a BitNetQuantConfig OBJECT, not a dict — subscripting it
     # raises TypeError, which would make the guard fail for the WRONG reason and look like it fired.
     effective = model.config.quantization_config.quantization_mode
-    assert effective == mode, (
-        f"mode mismatch: asked for {mode!r} but the loaded model is {effective!r}. "
-        f"Repo {Path(repo).name!r} carries its own quantization_config and the loader prefers it "
-        f"over the argument, so the request was IGNORED. A CALL SITE MUST NOT PASS A MODE ITS "
-        f"REPO DOES NOT CARRY."
-    )
+    # RAISED, not asserted: an `assert` here is stripped by `python -O`, which would delete the only
+    # guard between a silently wrong quantisation mode and every number computed afterwards.
+    if effective != mode:
+        raise RuntimeError(
+            f"mode mismatch: asked for {mode!r} but the loaded model is {effective!r}. "
+            f"Repo {Path(repo).name!r} carries its own quantization_config and the loader prefers it "
+            f"over the argument, so the request was IGNORED. A CALL SITE MUST NOT PASS A MODE ITS "
+            f"REPO DOES NOT CARRY."
+        )
     return model

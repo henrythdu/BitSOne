@@ -49,13 +49,16 @@ LORA_TARGETS = ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", 
 def build_joint_model(base: Path, device: str, grad_ckpt: bool = True) -> Any:
     """Packed OFFLINE base (trits frozen) + trainable LoRA on the seven targets.
 
-    `load_bitnet(..., "offline")` asserts the EFFECTIVE mode, because the repo's own config.json wins
+    `load_bitnet(..., "offline")` REQUIRES the EFFECTIVE mode, because the repo's own config.json wins
     over the argument and a silently wrong mode would train something else. The base stays frozen:
     only adapters and the head receive gradients.
     """
     from peft import LoraConfig, get_peft_model
 
     model = load_bitnet(str(base), "offline")
+    if device != "cuda":
+        # The loader places the model on CUDA. Another device is a move after load.
+        model = model.to(device)
     # A wrong base must be LOUD. PEFT either raises on an unmatched target or silently widens the
     # config, and both outcomes hide the real mistake: someone pointed this at a hybrid-attention
     # base, where the seven names reach only the full-attention layers.
@@ -68,7 +71,7 @@ def build_joint_model(base: Path, device: str, grad_ckpt: bool = True) -> Any:
             "hybrid-attention base lists twelve, adding in_proj_qkv / in_proj_z / in_proj_a /\n"
             "in_proj_b / out_proj for its linear-attention layers; that list is not this one."
         )
-    # PRESENCE IS NOT COVERAGE (peer review). A hybrid-attention base has all seven names too — on its
+    # PRESENCE IS NOT COVERAGE. A hybrid-attention base has all seven names too — on its
     # full-attention layers only — so a presence check passes while LoRA silently adapts part of the
     # torso. Counting matched modules against the layer count is what makes the refusal real: this
     # base has 30 of each; a hybrid base with 24 layers and 6 full-attention ones would have 6.
@@ -144,7 +147,7 @@ def collate(
     # EXACT FIT IS NOT TRUNCATION. `>= max_length` raised on a prompt that was exactly `max_length`
     # tokens and had lost nothing, because the guard could not tell "hit the cap" from "fit exactly".
     # Only a prompt whose UNTRUNCATED length exceeds the cap actually lost tokens, so at-cap prompts are
-    # re-tokenized without truncation (they are rare) and only real truncation refuses (peer review).
+    # re-tokenized without truncation (they are rare) and only real truncation refuses.
     at_cap = (am.sum(dim=1) >= max_length).nonzero().flatten().tolist()
     if at_cap:
         cut = [i for i in at_cap if len(tok(prompts[i], add_special_tokens=False)["input_ids"]) > max_length]
@@ -203,7 +206,7 @@ def _autocast(model: Any) -> Any:
 
     The device type is DERIVED rather than hard-coded. `device_type="cuda"` made `--device cpu` die
     inside autocast with a torch error instead of behaving like the flag says — the flag was threaded
-    through everything else, so it has to be honest here too (peer review).
+    through everything else, so it has to be honest here too.
     """
     return torch.autocast(device_type=str(next(model.parameters()).device.type), dtype=torch.bfloat16)
 
@@ -354,44 +357,36 @@ def main() -> int:
     # SEED FIRST — before anything that draws random numbers. `build_joint_model` initialises the LoRA
     # adapters and `PointerHead(...)` below is randomly initialised too, so a seed placed after those
     # calls cannot make either reproducible; it would only fix the sampler and dropout from then on.
-    # Peer review measured the principle directly: with the seed after construction the two head
-    # fingerprints differed (`afa3010079de` vs `ce259825b5db`); with it before, they matched. Our
-    # `trainer.train_head_only` already seeds first, which is why those controls reproduce exactly.
+    # Measured: with the seed after construction the two runs' head tensors differ; with it before,
+    # they are identical. `train_head` seeds first for the same reason, which is why its controls
+    # reproduce exactly.
     torch.manual_seed(args.seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(args.seed)
     mode = os.environ.get("BITSONE_DETERMINISTIC", "").strip()
     # `0`, `false` and `off` must mean OFF. As a truthiness test this ENABLED the switch for all three and
     # then recorded `determinism=0` in `report.json` — a report contradicting its own run, the same class
-    # of defect as a mis-recorded `weight_decay` (peer review). Only `1` and `strict` switch it on; an
+    # of defect as a mis-recorded `weight_decay`. Only `1` and `strict` switch it on; an
     # unknown value warns and stays off rather than silently guessing.
     enabled = mode in ("1", "strict")
     if mode and not enabled:
         print(f"warning: BITSONE_DETERMINISTIC={mode!r} not understood: determinism stays OFF (use 1 or strict)")
     if enabled:
         # `1` warns, `strict` raises. warn_only=True does NOT enforce determinism: ops with no
-        # deterministic implementation still run and merely warn — measured, a pair with warn_only=True
-        # still produced different LoRA fingerprints (`ceda299142db` vs `40e0910afe5a`). `strict` is the form
-        # that guarantees the property by refusing to run instead of hoping.
+        # deterministic implementation still run and merely warn — measured, a warn_only pair still
+        # diverged in the LoRA weights. `strict` guarantees the property by refusing to run instead of
+        # hoping.
         # CUBLAS_WORKSPACE_CONFIG has to be set before cuBLAS initialises; this is the first statement of
         # `main`, before any model work, so it is effective here. Do not move it below a CUDA call.
         os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
         torch.use_deterministic_algorithms(True, warn_only=(mode != "strict"))
-        # Measured: with THESE switches (math SDPA) two runs produced identical LoRA and head fingerprints
-        # (`6d8c65692718` / `3c445a2922a3`), while a default-kernel pair taken under GPU contention
-        # differed in the LoRA fingerprint only. So the bit-exactness rests on the SDPA switches, not on the
-        # call above.
-        # CAUSE NOT ATTRIBUTED, and the evidence is now specific. This configuration (200 rows / 2
-        # steps) differs run to run with DEFAULT kernel selection — four instances, on an idle card as
-        # well as under contention (`8295a2f84390`/`c1ac36059896`, then `46b81583d018`/`888a38e1db29`),
-        # always in the LoRA fingerprint only, with start fingerprints, head fingerprint and held-out CE identical.
-        # At 2000 rows / 20 steps the same code was bit-identical across four env-unset runs — TWO with
-        # default kernel selection and TWO with flash/mem-efficient FORCED (peer measurement,
-        # `a651b8f422dd`). So the difference
-        # tracks the CONFIGURATION — shapes and batch composition choose the backend — and not the load
-        # on the card, and 'atomics in the flash backward' is not established by it. What IS established:
-        # forcing the math kernel makes this configuration bit-exact. Hence a conservative measure for
-        # comparisons, not a demonstrated fix.
+        # FORCE THE MATH KERNEL for this configuration. Empirically this configuration (200 rows, 2
+        # steps) diverges run to run under the DEFAULT kernel selection — always in the LoRA weights,
+        # with head and held-out CE identical — while at 2000 rows / 20 steps the same code was
+        # bit-identical across four runs regardless of kernel. That pins the divergence on shapes and
+        # batch composition choosing the backend, not on contention; the cause inside the backend is
+        # NOT attributed. Forcing the math kernel makes this configuration bit-exact, so it is a
+        # conservative measure for comparisons, not a demonstrated fix.
         torch.backends.cuda.enable_flash_sdp(False)
         torch.backends.cuda.enable_mem_efficient_sdp(False)
         torch.backends.cuda.enable_math_sdp(True)
@@ -433,7 +428,7 @@ def main() -> int:
     lora_before = snapshot([(n, p) for n, p in model.named_parameters() if "lora_" in n])
 
     # The head's own shape is recorded in the report below: `head.pt` is a bare state_dict, so a
-    # re-measure needs hidden/d/mid, and `mid` is the H4e capacity control (mid=0 here). Peer review.
+    # re-measure needs hidden/d/mid, and `mid` is the capacity control (mid=0 here).
     head_d, head_mid = 256, 0
     head = PointerHead(hidden=model.config.hidden_size, d=head_d, mid=head_mid).to(args.device)
     head_before = snapshot(head.named_parameters())
@@ -442,7 +437,7 @@ def main() -> int:
     print(f"head parameters: {n_head:,}")
     # Printed because a reproducibility claim needs an observable: two runs of the same command must
     # show these two lines identical, or the two runs' later numbers are not comparable.
-    print("start fingerprints taken: head and LoRA (for the moved checks below)")
+    print("start snapshots taken: head and LoRA (for the moved checks below)")
 
     head_ce = mean_ce(model, head, held, tok, args.device, batch=args.eval_batch)
     print(f"held-out CE before training: {head_ce:.4f}")
@@ -460,9 +455,8 @@ def main() -> int:
     warmup = args.warmup if args.warmup >= 0 else max(5, int(0.03 * args.steps))
     print(f"warmup: {warmup} steps, then constant lr (LoRA {args.lr}, head {args.head_lr})")
     # PROVENANCE INCLUDING THE EVAL BATCH. A pair differing only in this number is not comparable:
-    # the same weights gave held-out CE 1.3917 at eval batch 8 and 1.3908 at eval batch 4 (peer
-    # measurement, identical start fingerprints, before any optimizer step). Print it, so a reader never
-    # has to infer it from the command line.
+    # the same weights gave held-out CE 1.3917 at eval batch 8 and 1.3908 at eval batch 4, before any
+    # optimizer step. Print it, so a reader never has to infer it from the command line.
     print(
         f"provenance: rows={len(rows)} train={len(train_rows)} held={len(held)} seed={args.seed} "
         f"steps={args.steps} micro={args.micro_batch} accum={args.grad_accum} warmup={warmup} "
@@ -499,11 +493,11 @@ def main() -> int:
                         # sequence of length 4 at dim 1 (got 15)" instead of training, which reads as a
                         # torch error rather than a data-shape one. Zero padding is safe:
                         # `pointer_soft_ce` slices each row to its own leading k, and the covered-mask
-                        # uses the row SUM, which padding at the end does not change. Found by peer
-                        # review, reproduced without a GPU on rows 0 and 6000.
+                        # uses the row SUM, which padding at the end does not change. Reproduced on
+                        # rows 0 and 6000 without a GPU without a GPU is not the point: the shape is the bug.
                         # Pad AFTER normalising, never before: dividing a padded row by its own sum would
                         # dilute the distribution and break the covered-mask, which is the only place
-                        # trailing zeros could matter (peer review, measured inert as written).
+                        # trailing zeros could matter (measured inert as written).
                         dist.append([x / s for x in perm] + [0.0] * (K - len(perm)))
                 teacher = torch.tensor(dist, dtype=torch.float32, device=args.device)
             loss, parts = batch_loss(model, head, batch, teacher, args.teacher_weight)
@@ -544,7 +538,7 @@ def main() -> int:
     print(f"held-out CE: {head_ce:.4f} -> {head_ce_after:.4f}")
     print(f"head moved: {head_moved}   lora moved: {lora_moved}   torso unchanged: {not torso_moved}")
     print(f"LoRA grads: {grads}")
-    # THE REFUSALS COME FIRST (peer review). Artifacts written before these checks would certify a run
+    # THE REFUSALS COME FIRST. Artifacts written before these checks would certify a run
     # that failed its own integrity tests, and the failure would be visible only in the exit code while
     # `lora/`, `head.pt` and `report.json` sat there looking re-measurable.
     if not head_moved:

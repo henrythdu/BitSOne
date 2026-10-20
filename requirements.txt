@@ -1,8 +1,7 @@
-# What this repository's code actually imports: torch (trainers, head, serving), transformers (base
-# load, tokenizer) and peft (LoRA). The base's BitNet layers are built by transformers' own
-# `integrations/bitnet.py`; loading it with `onebitllms` made unimportable succeeds, so it is not a
-# dependency. Versions are the certified `.venv-s1` set; torch's certified build is the CUDA 12.8
-# wheel, 2.11.0+cu128.
+# Imports used by this repository: torch (trainers, head, serving), transformers (base loading,
+# tokenizer) and peft (LoRA). transformers builds the base's BitNet layers, so no other loader is
+# needed. Versions are the set installed in `.venv-s1`; the torch build is the CUDA 12.8 wheel,
+# 2.11.0+cu128.
 torch==2.11.0
 transformers==5.18.0
 peft==0.21.2

@@ -72,10 +72,12 @@ def present() -> set[str]:
             check=True,
         ).stdout
     except (OSError, subprocess.CalledProcessError) as exc:
-        sys.exit(f"FAIL: cannot list the tree's files, so no reference can be confirmed: {exc}")
+        print(f"FAIL: cannot list the tree's files, so no reference can be confirmed: {exc}", file=sys.stderr)
+        sys.exit(2)
     names = {line for line in out.splitlines() if line}
     if not names:
-        sys.exit("FAIL: git lists no files, so no reference can be confirmed")
+        print("FAIL: git lists no files, so no reference can be confirmed", file=sys.stderr)
+        sys.exit(2)
     return names
 
 
@@ -83,7 +85,8 @@ def main() -> int:
     names = present()
     files = scanned()
     if not files:
-        sys.exit("FAIL: no files matched the scan set, so this check would pass on nothing")
+        print("FAIL: no files matched the scan set, so this check would pass on nothing", file=sys.stderr)
+        sys.exit(2)
 
     dangling: list[str] = []
     for path in files:
