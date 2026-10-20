@@ -67,3 +67,39 @@ Not an amendment, a correction, recorded here because the void numbers are still
 Their receipts say `first read`; the re-reads say `adapter-weights-did-not-bind: the first read
 scored the bare base model`. The reports on disk are the corrected ones; the void numbers survive
 only in this table and in the receipts.
+
+## 2026-10-20 — correction to the `calib-work` entry
+
+The entry above, dated 2026-10-19, says `runs/run/calib-work/` was untracked with `git rm --cached`
+and "nine files duplicating `runs/run/out/`". **That is false of this commit.** The directory is
+tracked:
+
+```console
+$ git ls-files runs/run/calib-work | wc -l
+9
+$ git ls-files runs/run/calib-work | grep checkpoints
+runs/run/calib-work/checkpoints/hobson-2b-run7-full/chat_template.jinja
+runs/run/calib-work/checkpoints/hobson-2b-run7-full/history.json
+runs/run/calib-work/checkpoints/hobson-2b-run7-full/lora/README.md
+runs/run/calib-work/checkpoints/hobson-2b-run7-full/lora/adapter_config.json
+runs/run/calib-work/checkpoints/hobson-2b-run7-full/<config>.json  (the config; renamed below)
+runs/run/calib-work/checkpoints/hobson-2b-run7-full/tokenizer_config.json
+runs/run/calib-work/checkpoints/hobson-2b-run7-full/train_config.json
+```
+
+The listing above gives the shape of this commit's tree, with the config written as `<config>`: its
+filename carried the prohibited upstream name, and the entry below renames it, so quoting it here
+would put the name back into the file that is removing it. Six of the seven lines are literal; the
+seventh is the file the rename touches, and after that entry it prints `run_config.json`.
+
+The entry is corrected here rather than rewritten: the false sentence is part of the record, and a
+ledger that quietly repairs itself cannot be checked against the history it describes. What can be
+checked is this tree: nine files under `runs/run/calib-work/` are tracked, listed above. What cannot
+be checked from here is whether any of them was untracked at an earlier commit, because this
+repository's history was re-rooted on 2026-10-19 and the earlier commits exist only in the archive
+bundle and the `research-history` branch; the check above is therefore stated against this commit,
+not against the claim.
+
+Why the check matters: the ledger is the artifact a reviewer reads instead of re-running git. An
+entry that describes a tree the repository does not contain sends that reviewer to the wrong
+conclusion, and it does so in the direction that makes the repository look cleaner than it is.
