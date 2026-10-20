@@ -1,5 +1,5 @@
 {
-  "base_model": "/home/hdu/Projects/BitSOne/BitNet Models/bitnet-b1.58-2b-4t",
+  "base_model": "<home>/Projects/BitSOne/BitNet Models/bitnet-b1.58-2b-4t",
   "base_revision": null,
   "num_slots": 24,
   "head_hidden": 0,

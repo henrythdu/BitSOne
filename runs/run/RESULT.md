@@ -235,5 +235,5 @@ one that means something, and it returns 1652 of 1652.
   path, which is itself the signal the pod did not write it.
 - Checkpoint nested under `checkpoints/hobson-2b-run7-full`; `calibrate.sh`'s search
   finds exactly one. **The run's own output confirms the flat layout it was nested
-  out of**: it printed `saved to /root/run7/out/checkpoints`, against run-6's nested
+  out of**: it printed `saved to <run-root>/out/checkpoints`, against run-6's nested
   `checkpoints/hobson-2b-run6-constant`.

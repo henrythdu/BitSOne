@@ -21,7 +21,7 @@ corpus-attribution line in `README.md`.
 | `runs/run/out/run7-artifacts-*.tar.gz.sha256` | deleted | it named a tarball that is not in the tree and never was | nothing references it |
 | `runs/run/out/calibrated/<previous name>.json` | renamed `bitsone-s1_config.json`; `base_model` changed from a machine-local path to `microsoft/bitnet-b1.58-2B-4T` | the old name was the upstream's; `AGENTS.md` requires a published config to name a usable base rather than a directory that exists on one machine | temperatures unchanged (`temperature` 1.0157, `temperature_by_kind` noul 0.5036 / choice 0.8630 / score 1.1297); every other field identical |
 | `runs/run/calib-work/` | untracked (`git rm --cached`) | nine files duplicating `runs/run/out/`; both copies were on disk | byte-identical: `start.log`, `train.log`, `train_config.json` all compare equal |
-| `runs/run/out/{start,train}.log`, `runs/run/calib-work/{start,train}.log`, `runs/run/smoke/{smoke-on,smoke-off}.log` | upstream path and name replaced by `<corpus-dir>` / `<external>` / `<corpus>`, `/home/hdu` → `<home>`; three-line header added to each | the ruling, on a repository that is now public | redacted on BYTES from the `352e7b1` blobs, then verified by a single-pass alignment: every step is either an identical byte or a substitution site, so no other byte moved. CR counts preserved (start.log 71 → 71, smoke logs 26 and 21), LF counts moved by exactly the three header lines (820 → 823, 393 → 396). An earlier attempt read the files in text mode, which normalised the `\r`-separated progress lines to `\n`; that version was never pushed as final and was redone from the blob. Its header line and this entry both claimed the counts were unchanged, which was false of that artifact |
+| `runs/run/out/{start,train}.log`, `runs/run/calib-work/{start,train}.log`, `runs/run/smoke/{smoke-on,smoke-off}.log` | upstream path and name replaced by `<corpus-dir>` / `<external>` / `<corpus>`, the home prefix → `<home>`; three-line header added to each | the ruling, on a repository that is now public | redacted on BYTES from the `352e7b1` blobs, then verified by a single-pass alignment: every step is either an identical byte or a substitution site, so no other byte moved. CR counts preserved (start.log 71 → 71, smoke logs 26 and 21), LF counts moved by exactly the three header lines (820 → 823, 393 → 396). An earlier attempt read the files in text mode, which normalised the `\r`-separated progress lines to `\n`; that version was never pushed as final and was redone from the blob. Its header line and this entry both claimed the counts were unchanged, which was false of that artifact |
 | `runs/run/CORPUS-MANIFEST.md`, `runs/run/smoke/TEACHER-SMOKE.md` | same substitution | same | row counts and every figure unchanged |
 
 ## 2026-10-19 — how the redactions were verified
@@ -40,7 +40,7 @@ One more rule, learned by a checker passing for the wrong reason: derive the sub
 the artifact or assert it — never restate it from memory. A verification that rebuilds a file with a
 shorter pair list reconstructs something the tool never produced, and its failure looks like a
 defect in the file. The set in `bitsone` terms is the six pairs applied in the longest-prefix-first
-order recorded above; a checker that omits `/home/hdu/sdbuild/strands-decider` will report a
+order recorded above; a checker that omits the excluded corpus prefix will report a
 spurious 18-byte shortfall on every log.
 
 ## 2026-10-19 — receipt format
@@ -103,3 +103,21 @@ not against the claim.
 Why the check matters: the ledger is the artifact a reviewer reads instead of re-running git. An
 entry that describes a tree the repository does not contain sends that reviewer to the wrong
 conclusion, and it does so in the direction that makes the repository look cleaner than it is.
+
+## 2026-10-20 — machine paths out of the record, and the `calib-work` config renamed
+
+Two things were still in the published tree after the 2026-10-19 redaction: absolute machine paths
+(the home prefix and the run-root prefix) in nine record files, and one config whose filename carried the
+prohibited upstream name — in the PATH, where a content search cannot see it (`git grep` reads
+bytes, `git ls-files` reads names).
+
+| path | change | why | checked |
+|---|---|---|---|
+| `runs/run/calib-work/checkpoints/hobson-2b-run7-full/<config>.json` → `run_config.json` | renamed | the name was the upstream's, and it was in the path, so only `git ls-files | grep -i` found it. NOT renamed to the published `bitsone-s1_config.json`: this file records what the calibration actually ran with, and naming it after the published artifact would claim an identity it does not have | content unchanged apart from the path substitution below |
+| `runs/run/RESULT.md`, `.../lora/README.md`, `.../lora/adapter_config.json`, `.../run_config.json`, `.../train_config.json`, `runs/run/{out,calib-work}/{start,train}.log`, `runs/AMENDMENTS.md` | the run-root prefix → `<run-root>`; the home prefix → `<home>`; the bare root prefix → `<home>/`, applied longest-prefix-first | the repository is public; the paths leak a user name and a pod layout, and one of them named the corpus directory | redacted on BYTES against the `HEAD` blob, then verified by a single-pass alignment: every step is an identical byte or a matched substitution pair, walk ends at both ends. Substitution sites: RESULT.md 1, lora/README.md 2, adapter_config.json 1, run_config.json 1, train_config.json 2, each log 23 and 4 (the two copies are identical). CR counts preserved 71 and 71; LF counts changed by nothing |
+| `runs/AMENDMENTS.md` (this file) | two literals replaced: the map sentence and the checker note now say "the home prefix" and "the excluded corpus prefix" | the ledger was the last place a prohibited name and a home path survived | the same byte scans as the row above return no file for either absolute prefix, and `git ls-files` returns 0 for the upstream name |
+
+The check that matters here is the one the earlier redaction taught: text-mode rewriting converts
+`\r` to `\n` and silently changes the artifact. Every file above was rewritten as bytes, and the CR
+and LF counts are asserted before and after — 71 CRs still in each log pair, LF unchanged. A
+substitution that had touched a newline would have failed the alignment walk.

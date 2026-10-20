@@ -1,8 +1,8 @@
 ---
-base_model: /root/run7/base
+base_model: <run-root>/base
 library_name: peft
 tags:
-- base_model:adapter:/root/run7/base
+- base_model:adapter:<run-root>/base
 - lora
 - transformers
 ---
