@@ -1,8 +1,7 @@
 """The plumbing the gates share. Not a gate: no `main`, no exit status of its own.
 
-Why it exists: artifact resolution used to be written out once per gate, so the same
-question had several answers that could drift apart. One question, one implementation, and the
-gates import it.
+Why it exists: each gate resolved artifacts itself, so one question had several answers that could
+drift apart. This module holds one implementation, and the gates import it.
 
 The import direction is one-way on purpose: `checks` → `bitsone`, never the reverse. That keeps
 `import bitsone` torch-free, which is what lets CI run without weights or a GPU.

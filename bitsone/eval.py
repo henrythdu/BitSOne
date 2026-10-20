@@ -1,20 +1,19 @@
 #!/usr/bin/env python3
-"""eval — the sealed, read-once evaluation of a checkpoint.
+"""eval — read-once evaluation of a checkpoint.
 
-One request per row through the same path serving uses (`bitsone.serve.Engine.answer`): the
-renderer, the key-token rule and the pointer head. Nothing here re-implements scoring, so a number
-from this file cannot disagree with what the model actually answers.
+Each row goes through `bitsone.serve.Engine.answer`, the same path that serving uses: renderer,
+key-token rule, pointer head. No scoring is re-implemented here, so a number from this file cannot
+disagree with what the model answers.
 
-Read-once is enforced, not promised: the first run of a split writes a receipt under
-`runs/eval/`, and a second run of the same split refuses unless `--allow-reread` gives a reason,
-which is recorded in the new receipt. A split read a second time without that reason would make
-every later number on it partly a training signal, so refusing is the point.
+Read-once: the first run of a split writes a receipt under `runs/eval/`. A second run of the same
+split stops unless `--allow-reread` gives a reason, and the reason is recorded. A split read twice
+makes later numbers on it partly a training signal.
 
 Run:
     .venv-s1/bin/python -m bitsone.eval --split "Training Data/<split>.jsonl" --limit 200
     .venv-s1/bin/python -m bitsone.eval --split <file> --allow-reread "why"
 
-Needs: GPU + the base weights + a checkpoint (published artifacts by default). Not part of CI.
+Needs a GPU, the base weights and a checkpoint. Not part of CI.
 """
 
 from __future__ import annotations
@@ -55,12 +54,11 @@ def receipt_path(split: Path) -> Path:
 
 
 def refuse_if_read(split: Path, allow_reread: str | None) -> None:
-    """Refuse a second read of a split unless a reason is given. Writes NOTHING.
+    """Refuse a second read of a split unless a reason is given. Writes nothing.
 
-    The refusal is a read; the record is written only after rows were actually scored
-    (`record_read`). Writing the receipt first meant a run that died loading weights marked the
-    split as read and then refused the legitimate first read — the read-once rule turning a crash
-    into a permanent loss of the split.
+    The record is written by `record_read`, after the rows are scored. When the receipt was written
+    first, a run that stopped at load marked the split as read, and the first real read was then
+    refused.
     """
     path = receipt_path(split)
     if path.is_file() and not allow_reread:
@@ -157,8 +155,7 @@ def main() -> int:
     if not rows:
         raise SystemExit(f"{split}: no rows read")
 
-    # THE READ HAPPENED, so it is recorded now — not before the model loaded, which is how a crashed
-    # run used to burn the split.
+    # The read happened, so it is recorded now, after the rows were scored.
     record_read(split, args.allow_reread)
 
     by_kind: dict[str, dict[str, float]] = {

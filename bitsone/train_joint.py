@@ -59,9 +59,9 @@ def build_joint_model(base: Path, device: str, grad_ckpt: bool = True) -> Any:
     if device != "cuda":
         # The loader places the model on CUDA. Another device is a move after load.
         model = model.to(device)
-    # A wrong base must be LOUD. PEFT either raises on an unmatched target or silently widens the
-    # config, and both outcomes hide the real mistake: someone pointed this at a hybrid-attention
-    # base, where the seven names reach only the full-attention layers.
+    # A wrong base must fail here. PEFT either raises on an unmatched target or widens the config,
+    # and both outcomes hide the real mistake: the path points at a hybrid-attention base, where the
+    # seven names reach only the full-attention layers.
     present = {n.rsplit(".", 1)[-1] for n, _ in model.named_modules()}
     missing = [t for t in LORA_TARGETS if t not in present]
     if missing:
@@ -71,7 +71,7 @@ def build_joint_model(base: Path, device: str, grad_ckpt: bool = True) -> Any:
             "hybrid-attention base lists twelve, adding in_proj_qkv / in_proj_z / in_proj_a /\n"
             "in_proj_b / out_proj for its linear-attention layers; that list is not this one."
         )
-    # PRESENCE IS NOT COVERAGE. A hybrid-attention base has all seven names too — on its
+    # The seven names are not a coverage test. A hybrid-attention base has all seven names too, on
     # full-attention layers only — so a presence check passes while LoRA silently adapts part of the
     # torso. Counting matched modules against the layer count is what makes the refusal real: this
     # base has 30 of each; a hybrid base with 24 layers and 6 full-attention ones would have 6.
@@ -538,7 +538,7 @@ def main() -> int:
     print(f"held-out CE: {head_ce:.4f} -> {head_ce_after:.4f}")
     print(f"head moved: {head_moved}   lora moved: {lora_moved}   torso unchanged: {not torso_moved}")
     print(f"LoRA grads: {grads}")
-    # THE REFUSALS COME FIRST. Artifacts written before these checks would certify a run
+    # The refusals come first. Artifacts written before these checks would certify a run
     # that failed its own integrity tests, and the failure would be visible only in the exit code while
     # `lora/`, `head.pt` and `report.json` sat there looking re-measurable.
     if not head_moved:

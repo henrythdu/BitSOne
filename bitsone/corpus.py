@@ -50,9 +50,8 @@ def corpus_dir(explicit: str | Path | None = None, *, near: Path | None = None) 
     repository's own `data/` directory, then the `data/` sibling of `near`. A directory counts only if ALL six files are in it, so a partial
     corpus fails here rather than half-way through a run.
 
-    Raises `SystemExit` rather than a plain exception because all four callers are CLIs or gates
-    whose contract is "say why, exit non-zero": that costs one line here instead of a try/except in
-    each `main()`. A caller that wants to catch it can — `SystemExit` is an ordinary exception.
+    Raises `SystemExit` because all four callers are CLIs or gates, and each one must print the
+    reason and exit non-zero. A caller that needs to catch it can: `SystemExit` is an exception.
     """
     cands: list[str | Path | None] = [
         explicit,

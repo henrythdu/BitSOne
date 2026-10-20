@@ -1,30 +1,24 @@
-"""train_head — train the pointer head on cached hidden states (the staged half).
+"""train_head — train the pointer head on cached hidden states.
 
-The head can be trained with the torso out of the loop: dump the hidden states once, then fit on the
-cache. This module wires exactly that half:
+The head can be trained without the torso in the loop: dump the hidden states once, then fit on the
+cache.
 
-    the six corpus files  ->  bitsone/corpus render  ->  cached hidden states  ->  train_head_only
+the six corpus files -> bitsone/corpus render -> cached hidden states -> train_head_only
 
-What it does, and what it deliberately does not:
+The dump runs under `no_grad` and reads the packed base. An adapter can be attached; when it is,
+the features are the deployed model's. `train_head_only` optimises head parameters only. This is
+the staged trainer. The shipped head comes from `train_joint.py`.
 
-* **Does**: dumps query/key hidden states from the packed base — optionally with a shipped adapter
-  attached, in which case the features are the deployed ones — then trains a fresh head on those
-  cached vectors and reports train/val cross-entropy per epoch.
-* **Does not** touch the torso. Nothing here has gradients outside the head: the dump runs under
-  `no_grad`, and `train_head_only` optimises head parameters only. This is a STAGED trainer; the
-  shipped head came from the joint path, `train_joint.py`.
-* **Does not** apply the two collator augmentations (ordinal smoothing, reverse-score). They belong
-  to the joint path; this trainer fits a one-hot target, and says so rather than implying otherwise.
+This trainer does not apply the two collator augmentations (ordinal smoothing, reverse-score).
+They belong to the joint path.
 
-**Gold, and why the permutation cannot desynchronise it.** Corpus rows carry a single `label` index
-into the canonical option order. Rendering may permute the options, so the target is a one-hot at
-`order.index(label)` in the rendered order, and `corpus.render_question` returns the slot -> label
-binding where that identity is checked rather than believed. The dump stores the target ALIGNED to
-its own ragged slices (the same contract `pointer.dump_rows` uses), so training cannot re-derive a
-different alignment from the rows.
+Target: a corpus row carries one `label` index into the canonical option order. Rendering may
+permute the options, so the target is a one-hot at `order.index(label)` in the rendered order.
+`corpus.render_question` returns the slot-to-label binding. The dump stores its target aligned to
+its own slices, in the same form `pointer.dump_rows` uses.
 
-The head it produces is NEW — random init, trained here — and is not the shipped head. Nothing this
-module computes is comparable to run 7's number, and no number of run 7's may be quoted from it.
+The head this trainer produces starts from a random initialisation. It is not the shipped head, and
+no number from it is comparable to run 7's number.
 """
 
 from __future__ import annotations

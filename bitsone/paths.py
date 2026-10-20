@@ -1,16 +1,14 @@
-"""Every filesystem fact this repository knows, in one place.
+"""The filesystem locations this repository uses, in one place.
 
-Why this module exists: the base model's path used to be written out literally in six modules, and
-the shipped checkpoint was found three different ways — one literal path, one glob, one two-root
-glob. Several answers to "where does the run live" made a rename a six-file edit with one missed
-site, and a gate that silently checked nothing.
+The base model path and the checkpoint location are defined here, not in each caller. A location
+that appears in several modules changes in one place, and `checkpoint_dir` raises when the files
+are absent instead of guessing.
 
-The rule here: one place knows where things are, and it refuses to guess. The single exception is
-`CORPUS_RENDER_SHA`, which is not a provenance claim: it is the renderer's regression lock, so a
-stray space in `corpus.py` fails `checks/corpus_render_check.py` instead of quietly changing what
-the shipped checkpoint was trained on.
+`CORPUS_RENDER_SHA` is the one digest this repository keeps. It is not a provenance claim. It locks
+the renderer: a change to `corpus.py` that alters the prompt text fails
+`checks/corpus_render_check.py`.
 
-Kept stdlib-only on purpose — nothing in this module may import torch, so CI can use it.
+This module uses the standard library only, so CI can import it without torch.
 """
 
 from __future__ import annotations
@@ -22,20 +20,19 @@ ROOT = Path(__file__).resolve().parents[1]
 # Where build evidence may live. Ordered: the repo's own run tree first, then the exported copy.
 EVIDENCE_ROOTS: tuple[Path, ...] = (ROOT / "runs", ROOT / "System One Models")
 
-# Where the base weights live, and what its config must declare. The declaration is the guard:
-# without it, a directory pointing at a differently quantised model trains happily and is wrong.
+# Where the base weights live, and what its config must declare. The declaration is a guard: a
+# directory that points at a differently quantised model is refused.
 BASE_DIR = ROOT / "BitNet Models" / "bitnet-b1.58-2b-4t"
 BASE_CONFIG_REQUIRED = {"quantization_mode": "offline", "linear_class": "autobitlinear"}
 
-# The two files a shipped checkpoint must contain. Names, not hashes: a wrong-but-same-shaped
-# head is caught structurally in `bitsone.serve.load`, which checks the head against the base.
+# The two files a shipped checkpoint must contain. These are names, not hashes: `bitsone.serve.load`
+# checks the head against the base's hidden size.
 HEAD_NAME = "slot_head.pt"
 ADAPTER_DIR = "lora"
 ADAPTER_NAME = "adapter_model.safetensors"
 
-# The rendered corpus, one digest. This is the renderer's regression lock -- recorded by
-# `checks/corpus_render_check.py --write-digest` and re-asserted on every run -- and the only
-# digest this repository keeps. It pins OUR renderer, not anyone else's.
+# The rendered corpus, one digest. `checks/corpus_render_check.py --write-digest` records it and
+# each run compares against it. It pins this repository's renderer.
 CORPUS_RENDER_SHA = "f67859b0c66cc3459e91d66b9de5c4b7ccfd57a24ffadb59d082bdb097faab55"
 
 
@@ -54,11 +51,10 @@ def find(name: str) -> Path:
 
 
 def checkpoint_dir() -> Path:
-    """The directory holding a shipped head and its adapter.
+    """The directory that holds a shipped head and its adapter.
 
-    Structural, not cryptographic: a `slot_head.pt` with a sibling `lora/` that carries the adapter
-    file. `bitsone.serve.load` then checks the head's shapes against the base, which is what
-    actually catches a head from another run.
+    The test is structural: a `slot_head.pt` and a sibling `lora/` that holds the adapter file.
+    `bitsone.serve.load` then checks the head against the base's hidden size.
     """
     for path in candidates(HEAD_NAME):
         if (path.parent / ADAPTER_DIR / ADAPTER_NAME).is_file():
@@ -70,10 +66,9 @@ def checkpoint_dir() -> Path:
 
 
 def base_model() -> Path:
-    """The base the adapter and head attach to, with its config declarations asserted.
+    """The base that the adapter and head attach to, after its config declarations are checked.
 
-    No digest: the declaration check is what survives. A placeholder pointing at a differently
-    quantised base would otherwise train happily and be wrong, and nothing downstream would say so.
+    A directory that points at a differently quantised base is refused here.
     """
     import json
 
@@ -87,9 +82,8 @@ def base_model() -> Path:
         cfg = json.loads(cfg_path.read_text(encoding="utf-8"))
     except (OSError, ValueError) as exc:
         raise SystemExit(f"base config at {cfg_path} is unreadable: {exc}") from exc
-    # The declaration lives under `quantization_config` in a real base config; accept the flat form
-    # too, because a hand-written config may hoist it. Reading only the top level is what made this
-    # guard reject a correct base.
+    # The declaration is under `quantization_config` in a real base config. The flat form is also
+    # accepted, because a hand-written config may put it at the top level.
     declared = {**cfg, **cfg.get("quantization_config", {})}
     wrong = {k: (declared.get(k), v) for k, v in BASE_CONFIG_REQUIRED.items() if declared.get(k) != v}
     if wrong:
@@ -99,13 +93,10 @@ def base_model() -> Path:
 
 
 def tokenizer_dir() -> Path | None:
-    """A local tokenizer the key-token fixture can use; None means that section is skipped.
+    """A local tokenizer for the key-token section, or None to skip that section.
 
-    Order matters: the base model's own tokenizer first (that is the one the shipped model
-    tokenises with), then a checkpoint's copy, and only then whatever else carries the name —
-    and a candidate counts only if its `tokenizer.json` actually parses as one. A stray file that
-    happens to be called `tokenizer.json` used to be picked up here and silently disabled the
-    section, which is the same class of failure as a gate that passes without reading anything.
+    Order: the base model's tokenizer first, then a checkpoint's copy, then any other file with that
+    name. A candidate counts only if its `tokenizer.json` parses as a tokenizer.
     """
     import json
 

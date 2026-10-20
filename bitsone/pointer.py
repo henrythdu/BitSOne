@@ -31,19 +31,16 @@ D_HEAD = 256  # pointer dimension, fixed by the pre-registration
 class PointerHead(nn.Module):
     """LayerNorm -> W_q / W_k -> scaled dot product. K-independent: no parameter knows the slot index.
 
-    `checks/pointer_head_check.py` recomputes this formula from the raw weights rather than
-    comparing it to any reference class. Every axis below is a pre-registered choice, not a flag:
+    `checks/pointer_head_check.py` recomputes this formula from the weights. Each axis below is a
+    pre-registered choice:
 
-      * ONE SHARED LayerNorm for both sides (not two). This is the TIGHTER inductive bias for the
-        claim we are making: independent norms let each side be normalised into a different space,
-        so a dot product could mix "does option k's text match the decision" with a per-side scale
-        freedom. No measurement anywhere distinguishes shared from separate, so this is a
-        PRE-REGISTERED
-        choice, not a fidelity claim.
-      * projection biases left at the torch default (True). A bias is NOT redundant after a
-        LayerNorm: expanding (k+b_k)·(q+b_q) gives k·b_q + b_k·q + b_k·b_q, every term of which
-        varies with k, so bias changes the ranking — a real degree of freedom.
-      * dropout defaults to 0.0 (an Identity): the pre-registered head has none.
+      * One LayerNorm for both sides. Separate norms give each side its own scale, and the dot
+        product would then mix the match score with that scale. No measurement separates the two
+        forms, so this form is pre-registered, not a measured claim.
+      * Projection biases at the torch default (True). A bias is not redundant after a LayerNorm:
+        (k+b_k)·(q+b_q) = k·q + k·b_q + b_k·q + b_k·b_q, and every added term depends on k, so bias
+        changes the ranking.
+      * Dropout 0.0 (Identity): the pre-registered head has none.
     """
 
     def __init__(self, hidden: int = HIDDEN, d: int = D_HEAD, dropout: float = 0.0, mid: int = 0) -> None:
@@ -67,14 +64,11 @@ class PointerHead(nn.Module):
     def forward(self, h_query: torch.Tensor, h_keys: torch.Tensor, mask: torch.Tensor) -> torch.Tensor:
         """(B,H) + (B,K,H) + (B,K) bool -> (B,K) fp32 logits, masked positions at -inf.
 
-        The INPUTS are cast to fp32 first, not just the outputs. A bf16 torso hands over bf16
-        hidden states, and an fp32 Linear called on them raises a dtype mismatch outside autocast;
-        under autocast it silently computes the projection in bf16, which contradicts this class's
-        own contract ("the head runs in fp32 even when the torso is bf16") and makes the result
-        depend on the caller's context manager. Casting here is what makes the contract true at the
-        only place it can be enforced.
+        The inputs are cast to fp32 first, not only the outputs. A bf16 torso passes bf16 hidden
+        states: an fp32 Linear raises a dtype error outside autocast, and under autocast it computes
+        the projection in bf16. This cast makes the head run in fp32 whatever the caller does.
 
-        Masking lives INSIDE the head so that position correctness is testable in one place.
+        Masking is inside the head, so position correctness is tested in one place.
         """
         nq = self.dropout(self.norm(h_query.float()))
         nk = self.dropout(self.norm(h_keys.float()))

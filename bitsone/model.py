@@ -1,8 +1,8 @@
-"""model — load the base the adapter and head attach to.
+"""model — load the base that the adapter and the head attach to.
 
-One function, because that is all the live path needs: `bitsone.serve.load` and both trainers load
-the same base the same way, and the one thing worth asserting at load time is that the quantisation
-mode in effect is the one asked for.
+`bitsone.serve.load` and both trainers call `load_bitnet`, so the base is loaded the same way in
+all three places. The load checks one property: the quantisation mode in effect is the mode asked
+for.
 """
 
 from __future__ import annotations
@@ -20,15 +20,14 @@ except ImportError:  # pragma: no cover - only on older transformers
 
 
 def load_bitnet(repo: str, mode: str) -> Any:
-    """Load a BitNet repo on the CUDA device and REQUIRE the effective quantization mode to be `mode`.
+    """Load a BitNet repo on the CUDA device and require the effective quantization mode to be `mode`.
 
-    The effective mode is decided by the REPO's own config.json, because the loader prefers a
-    checkpoint's existing quantization_config over the argument passed here. So a call site that
-    passes a mode its repo does not carry is SILENTLY IGNORED: the argument looks like it selects
-    the mode and does not. Asserting on the EFFECTIVE mode, read after load and before any forward,
-    is what makes the wrong version impossible rather than merely unlikely.
+    The repo's own config.json decides the effective mode. The loader uses the checkpoint's
+    existing quantization_config before the argument passed here, so the argument is ignored when
+    the repo carries its own. This function reads the effective mode after load and before any
+    forward pass, and raises when it differs from `mode`.
 
-    Repo modes in this tree, measured from the bytes:
+    Modes in this tree, read from the files:
       bitnet-b1.58-2b-4t       -> offline   (the packed artifact: what run 5 trained and what ships)
       bitnet-b1.58-2b-4t-bf16  -> online    (the bf16 masters)
     """
@@ -36,11 +35,11 @@ def load_bitnet(repo: str, mode: str) -> Any:
     model: Any = AutoModelForCausalLM.from_pretrained(
         repo, dtype=torch.bfloat16, device_map="cuda", quantization_config=cfg
     )
-    # NOTE: config.quantization_config is a BitNetQuantConfig OBJECT, not a dict — subscripting it
-    # raises TypeError, which would make the guard fail for the WRONG reason and look like it fired.
+    # `config.quantization_config` is a BitNetQuantConfig object, not a dict. Subscripting it raises
+    # TypeError, which would report the wrong cause.
     effective = model.config.quantization_config.quantization_mode
-    # RAISED, not asserted: an `assert` here is stripped by `python -O`, which would delete the only
-    # guard between a silently wrong quantisation mode and every number computed afterwards.
+    # Raise, do not assert: `python -O` removes an assert, and this is the only check that the mode
+    # in effect is the requested mode.
     if effective != mode:
         raise RuntimeError(
             f"mode mismatch: asked for {mode!r} but the loaded model is {effective!r}. "

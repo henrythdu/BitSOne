@@ -122,14 +122,13 @@ def _torso(model: Any) -> Any:
 def load_adapter_weights(model: Any, path: Path) -> None:
     """Load the adapter's tensors into `model`, and FAIL if any of them cannot be placed.
 
-    The published adapter names its tensors `base_model.model.layers.N...lora_A.weight`, while PEFT
-    expects `base_model.model.model.layers.N...lora_A.default.weight`. Handed straight to
-    `PeftModel.from_pretrained`, that mismatch is a WARNING: LoRA's B matrices keep their zero
-    initialisation and the model silently serves the bare base with an adapter-trained head. That is
-    how the first evaluation of this checkpoint produced chance accuracy and saturated logits.
+    The published adapter names its tensors `base_model.model.layers.N...lora_A.weight`. PEFT
+    expects `base_model.model.model.layers.N...lora_A.default.weight`. `PeftModel.from_pretrained`
+    only warns about this mismatch: LoRA's B matrices keep their zero initialisation, and the model
+    then serves the bare base with an adapter-trained head.
 
-    So: translate each key to the name the model actually has, and refuse to return while any B
-    matrix is still zero -- a zero B means the adapter contributes nothing, whatever the file says.
+    This function translates each key to the name the model has. It raises when a tensor is
+    unmatched, when a parameter has no tensor, or when any B matrix is still zero.
     """
     from safetensors.torch import load_file
 
@@ -187,13 +186,11 @@ def load(
     device: str = "cuda",
     dtype: Any = None,
 ) -> Engine:
-    """Load the shipped model: adapter + head on the packed base.
+    """Load the shipped model: adapter and head on the packed base.
 
-    Both paths default through `bitsone.paths`, which locates a checkpoint structurally (a
-    `slot_head.pt` with a sibling `lora/`). Identity is then checked where it can be: the head is
-    built for the base's hidden size, so a head from a differently shaped run is refused here
-    rather than served silently. Two runs sharing a shape cannot be told apart by shape alone,
-    which this repository no longer keeps.
+    Both paths default through `bitsone.paths`, which finds the checkpoint by its structure: a
+    `slot_head.pt` with a sibling `lora/`. The head is built for the base's hidden size, so a head
+    from a run with a different shape is refused here.
     """
     import torch
     from transformers import AutoTokenizer
