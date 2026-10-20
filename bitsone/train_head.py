@@ -57,10 +57,9 @@ def load_base(
         p.requires_grad_(False)
     model.eval()
     if adapter is not None:
-        # THE SAME LOADER SERVING USES. `PeftModel.from_pretrained` warns about a name mismatch and
-        # then keeps LoRA's zero-initialised B matrices, so the "adapter-attached" features would be
-        # the bare base's while the run reported success. `load_adapter_weights` translates the names
-        # and refuses rather than warn.
+        # The same loader that serving uses. `PeftModel.from_pretrained` warns about a name mismatch
+        # and leaves LoRA's B matrices at zero, so the features would come from the bare base.
+        # `load_adapter_weights` translates the names and raises when a tensor does not fit.
         from peft import LoraConfig, get_peft_model
 
         from bitsone.serve import load_adapter_weights
@@ -72,6 +71,9 @@ def load_base(
         # The loader places the model on CUDA. Another device is a move after load.
         model = model.to(device)
     tok_dir = tokenizer_from or (adapter.parent if adapter else base)
+    if not (Path(tok_dir) / "tokenizer.json").is_file():
+        # An adapter directory holds no tokenizer. The base's tokenizer is the one it was trained with.
+        tok_dir = base
     tok = AutoTokenizer.from_pretrained(str(tok_dir), fix_mistral_regex=False)
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
@@ -120,6 +122,7 @@ def dump_corpus(
     qs: list[torch.Tensor] = []
     ks: list[torch.Tensor] = []
     golds: list[float] = []
+    labels: list[tuple[str, ...]] = []
     offsets: list[int] = [0]
     ids: list[str] = []
     perms: list[list[int]] = []
@@ -189,6 +192,7 @@ def dump_corpus(
             # one-hot in the RENDERED order, stored flat against this row's own ragged slice
             golds.extend(1.0 if j == slots[i] else 0.0 for j in range(len(k_pos)))
             perms.append(orders[i])
+            labels.append(rendered.slot_labels)
             ids.append(f"{row.get('task', '?')}:{start + i}")
         if progress and start % (batch * 200) == 0:
             print(f"    dumped {start}/{len(rows)}", flush=True)
@@ -204,6 +208,7 @@ def dump_corpus(
         "stored_dtype": str(q.dtype),
         "gold": torch.tensor(golds, dtype=torch.float32),
         "perm": perms,
+        "labels": labels,
     }
 
 
@@ -237,6 +242,40 @@ def moved(before: list[torch.Tensor], params: Any) -> bool:
     """True when the sampled tensors differ from `before` (including a changed shape or count)."""
     now = snapshot(params)
     return len(before) != len(now) or any(not torch.equal(a, b) for a, b in zip(before, now))
+
+
+@torch.no_grad()
+def label_report(head: Any, dump: dict[str, Any], device: str = "cuda") -> dict[str, Any]:
+    """Overall accuracy and per-label recall of one head on one dump.
+
+    The dump stores the slot labels of every row, so a prediction maps back to the option name the
+    renderer used. Overall accuracy hides a family that is never selected; the per-label table shows
+    the support and the recall of each name.
+    """
+    from bitsone.pointer import dense_batch
+
+    n = int(dump["q"].shape[0])
+    preds: list[int] = []
+    for start in range(0, n, 256):
+        idx = torch.arange(start, min(start + 256, n))
+        q, k, mask = dense_batch(dump, idx, device)
+        preds.extend(int(v) for v in head(q, k, mask).argmax(dim=-1).tolist())
+
+    hits = 0
+    table: dict[str, list[int]] = {}
+    off = dump["offset"]
+    for i, pred in enumerate(preds):
+        labels = dump["labels"][i]
+        gold = int(torch.argmax(dump["gold"][int(off[i]) : int(off[i + 1])]).item())
+        name = labels[gold]
+        hits += int(pred == gold)
+        entry = table.setdefault(name, [0, 0])
+        entry[0] += int(pred == gold)
+        entry[1] += 1
+    return {
+        "accuracy": hits / max(1, len(preds)),
+        "by_label": {k: {"correct": v[0], "support": v[1], "recall": v[0] / v[1]} for k, v in sorted(table.items())},
+    }
 
 
 def train_head_only(
@@ -287,14 +326,17 @@ def main() -> int:
     ap.add_argument("--lr", type=float, default=1e-3)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--max-options", type=int, default=0, help="skip rows with more options than this")
+    ap.add_argument(
+        "--option-set",
+        default=None,
+        help="keep only rows whose option names are exactly this set, comma separated",
+    )
     ap.add_argument("--device", default="cuda")
     ap.add_argument("--out", default=None, help="output dir for the head + report")
     ap.add_argument("--no-permute", action="store_true", help="render in canonical order (no augmentation)")
     args = ap.parse_args()
-    # SEED FIRST: the head below is randomly initialised, so a seed set after its construction leaves
-    # the starting point — and therefore the 'untrained' held-out CE — different on every run. Peer
-    # review saw exactly that in the first two controls (1.4214 vs 1.4387); `trainer.train_head_only`
-    # already seeds before constructing, which is why its own controls reproduced to 4 decimals.
+    # The head below is randomly initialised, so the seed is set before its construction. Otherwise
+    # the starting point changes on every run, and the untrained held-out CE changes with it.
     torch.manual_seed(args.seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(args.seed)
@@ -307,6 +349,10 @@ def main() -> int:
             break
     if args.max_options:
         rows = [r for r in rows if len(r["options"]) <= args.max_options]
+    if args.option_set:
+        want = {s.strip() for s in args.option_set.split(",") if s.strip()}
+        rows = [r for r in rows if {str(p[0]) for p in corpus.pairs_of(r["kind"], r["options"])} == want]
+        print(f"option set {sorted(want)}: {len(rows)} rows")
     train_rows, val_rows = corpus.split_examples(rows, val_fraction=args.val_fraction, seed=args.seed)
     if args.limit:
         train_rows, val_rows = train_rows[: args.limit], val_rows[: max(1, args.limit // 8)]
@@ -344,6 +390,12 @@ def main() -> int:
     print("loss curve:", " ".join(f"{x:.4f}" for x in curve))
     print(f"val CE: untrained {before:.4f} -> trained {after:.4f}   ({time.time() - t1:.1f}s)")
     print(f"head params: {n_head:,}  moved={head_moved}   torso unchanged={not torso_moved}")
+    train_scores = label_report(head, train_dump, device=args.device)
+    val_scores = label_report(head, val_dump, device=args.device)
+    print(f"accuracy: train {train_scores['accuracy']:.4f}  val {val_scores['accuracy']:.4f}")
+    for split, scores in (("train", train_scores), ("val", val_scores)):
+        for name, row in scores["by_label"].items():
+            print(f"  {split:5s} {name:22s} recall {row['recall']:.3f}  ({row['correct']}/{row['support']})")
     if not head_moved:
         raise SystemExit("the head did not move: nothing was trained")
     if torso_moved:
@@ -369,6 +421,8 @@ def main() -> int:
                     "torso_unchanged": not torso_moved,
                     "loss_curve": curve,
                     "val_ce": {"untrained": before, "trained": after},
+                    "accuracy": {"train": train_scores["accuracy"], "val": val_scores["accuracy"]},
+                    "by_label": {"train": train_scores["by_label"], "val": val_scores["by_label"]},
                     "not_claimed": "a NEW head trained on cached features; not run 7's head, not joint training",
                 },
                 indent=1,

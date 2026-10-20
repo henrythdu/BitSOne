@@ -209,9 +209,9 @@ def load(
     base_hidden = int(getattr(model.config, "hidden_size", 0))
     if base_hidden <= 0:
         raise SystemExit(f"{base_path}: config carries no hidden_size, so the head's width cannot be checked")
-    # Build an EMPTY adapter shell, then place every tensor ourselves: `PeftModel.from_pretrained`
-    # warns about a name mismatch and then serves the bare base, which is the failure this loader
-    # exists to make impossible. One load path, and it fails closed.
+    # Build an empty adapter shell, then place every tensor here. `PeftModel.from_pretrained` only
+    # warns about a name mismatch and then serves the bare base. This loader checks the names, the
+    # coverage and the zero B matrices, and raises when one of them is wrong.
     from peft import LoraConfig, get_peft_model
 
     adapter_cfg = LoraConfig.from_pretrained(str(ckpt / "lora"))
