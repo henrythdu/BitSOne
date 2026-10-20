@@ -1,15 +1,10 @@
-"""references_check — every repository path our prose names must exist.
+"""references_check — every repository path that the prose names must exist.
 
-Why it exists: the digest machinery was removed, and with it the habit of asking whether a claim
-still refers to something real. One pass produced four references to files that no longer existed —
-a deleted parity gate named in two modules, a deleted port-parity gate, and the deleted `src/`
-tombstones in `AGENTS.md`. Each one would have sent a reader to nothing. A docstring is an
-instruction; an instruction pointing at a file that is not there is a defect, and this kind of
-defect is mechanically detectable.
+A path in a docstring or a comment is an instruction to the reader. When the file is absent, the
+reader finds nothing, and this check reports it.
 
-What it scans: what executes and what instructs — `bitsone/*.py`, `checks/*.py`, the root `*.md`,
-and `docs/**/*.md`. It does NOT scan `runs/`: that is frozen evidence, and its prose legitimately
-names paths that exist only at the archive tag.
+What it scans: `bitsone/*.py`, `checks/*.py`, the root `*.md` and `docs/**/*.md`. It does not scan
+`runs/`: that tree is frozen evidence, and its prose names paths that exist only at the archive tag.
 
 The allow-list is explicit, one entry per path with the reason it is still named. Prefixes are
 deliberately not allowed: a prefix that permits a whole historical tree also permits a genuinely

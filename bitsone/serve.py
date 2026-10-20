@@ -101,8 +101,6 @@ class Engine:
         )
 
 
-
-
 def _torso(model: Any) -> Any:
     """The decoder stack without the vocabulary projection.
 
@@ -142,8 +140,10 @@ def load_adapter_weights(model: Any, path: Path) -> None:
         for base in list(out):
             if base.startswith("base_model.model.") and not base.startswith("base_model.model.model."):
                 out.append(base.replace("base_model.model.", "base_model.model.model.", 1))
-        out += [k.replace(".lora_A.weight", ".lora_A.default.weight").replace(
-            ".lora_B.weight", ".lora_B.default.weight") for k in list(out)]
+        out += [
+            k.replace(".lora_A.weight", ".lora_A.default.weight").replace(".lora_B.weight", ".lora_B.default.weight")
+            for k in list(out)
+        ]
         return out
 
     placed, unmatched = {}, []

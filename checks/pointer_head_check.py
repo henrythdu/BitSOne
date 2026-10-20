@@ -6,11 +6,11 @@ forward computes exactly the arithmetic its docstring states. This file recomput
 the raw weights with primitive ops (`F.layer_norm`, `F.linear`) rather than through the module's own
 layers, so folding the scale, dropping the mask or reordering the norm shows up as a mismatch.
 
-Also asserted, each because it fails silently rather than loudly:
+Also asserted:
 
   * mask semantics: masked slots are -inf, and an all-masked row is all -inf (not NaN, not 0)
   * K-permutation equivariance: permuting the keys permutes the logits and changes nothing else
-  * position blindness: no head parameter depends on slot index
+  * key independence: a key's logit does not depend on the keys that follow it
   * precision: logits are fp32 even when the torso hands over bf16 hidden states
 
 Needs: torch, and a checkpoint directory holding `slot_head.pt`. No GPU, no corpus, no base weights.

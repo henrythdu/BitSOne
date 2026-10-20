@@ -277,9 +277,7 @@ def train_head_only(
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(
-        description="Train the pointer head on cached features (staged, head only)."
-    )
+    ap = argparse.ArgumentParser(description="Train the pointer head on cached features (staged, head only).")
     ap.add_argument("--corpus-dir", default=None)
     ap.add_argument("--base-model", default=str(BASE))
     ap.add_argument("--adapter", default=None, help="LoRA dir to attach (e.g. the shipped run-7 adapter)")

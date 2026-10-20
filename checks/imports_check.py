@@ -119,8 +119,7 @@ def main() -> int:
         rel = path.relative_to(ROOT)
         for lineno, expr in path_roots(path):
             offenders.append(
-                f"{rel}:{lineno}: adds {expr} to sys.path — the only permitted form is "
-                "sys.path.insert(0, str(ROOT))"
+                f"{rel}:{lineno}: adds {expr} to sys.path — the only permitted form is sys.path.insert(0, str(ROOT))"
             )
         for lineno, mod in imports_of(path):
             if mod not in allowed:

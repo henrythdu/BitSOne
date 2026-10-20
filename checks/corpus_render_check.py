@@ -1,20 +1,19 @@
 #!/usr/bin/env python3
-"""checks/corpus_render_check.py — our renderer is deterministic, self-consistent and pinned.
+"""checks/corpus_render_check.py — the renderer is deterministic, self-consistent and pinned.
 
-The properties that make the renderer usable, each of which can fail on its own:
+Asserted properties:
 
-  * determinism — the same row renders to the same bytes twice in the same process
-  * binding — one span per option, ascending, non-overlapping, inside the text, and each span
-    starts with its own option's number
-  * permutation — re-rendering with a permuted option order permutes the slot labels, keeps the
-    set of option texts, and keeps the span geometry identical
-  * key tokens — the last token FULLY inside each span, from the tokenizer the model ships with
-  * a recorded digest — the whole rendered corpus hashes to one value recorded in
-    `bitsone/paths.py`; an accidental change to spacing, prefixes or ordering shows up as one line
+  * determinism: one row renders to the same text twice in one process
+  * binding: one span per option, ascending, non-overlapping, inside the text, each span starting
+    with its own option's number and containing no line break
+  * permutation: a permuted option order permutes the slot labels, keeps the option texts and keeps
+    the span geometry
+  * key tokens: the last token fully inside each span, from the model's own tokenizer
+  * a recorded digest: the whole rendered corpus hashes to the value in `bitsone/paths.py`, so a
+    change to spacing, prefixes or order shows up in one line
 
-The digest is the regression lock, not a proof of correctness: it says "this is the rendering
-that was reviewed", which is exactly what a checkpoint's inputs need to be pinned to. Write it
-once with `--write-digest`, review the diff, then commit the value.
+The digest locks the renderer. It does not prove the renderer correct. Record it with
+`--write-digest`, read the diff, then commit the value.
 
 Needs: the six corpus files (outside the tree) and, for the key-token section, a tokenizer.
 No torch, no GPU.
