@@ -43,7 +43,7 @@ implementation, because none is imported:
 | claim | gate | measured |
 |---|---|---|
 | our pointer head is the function its own docstring specifies | `checks/pointer_head_check.py` | the shipped head loads strict, and its forward matches the documented formula recomputed independently with `F.layer_norm`/`F.linear`; mask → −inf incl. an all-masked row; K-permutation equivariant; fp32 out |
-| our renderer is deterministic and unchanged | `checks/corpus_render_check.py` | 123,339 rows / 662,935 spans / 662,935 key tokens, self-consistent; rendered digest `21d37596…` recorded, so a rendering change fails the gate |
+| our renderer is deterministic and unchanged | `checks/corpus_render_check.py` | 123,339 rows / 662,935 spans / 662,935 key tokens, self-consistent; rendered digest `f67859b0…` recorded, so a rendering change fails the gate |
 | our serving path is self-consistent | `checks/serving_replay_check.py` | one request through two of our paths gives identical log-probs; option permutation permutes the scores; log-probs finite and summing to 1; key indices strictly increasing |
 
 ## Results
